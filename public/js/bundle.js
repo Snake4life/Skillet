@@ -847,6 +847,7 @@ var Watch = (function (_React$Component) {
   _createClass(Watch, [{
     key: 'render',
     value: function render() {
+      var vidName = './videos/' + this.props.params.vKey;
       return _react2.default.createElement(
         'div',
         null,
@@ -859,7 +860,7 @@ var Watch = (function (_React$Component) {
         _react2.default.createElement(
           'video',
           { width: '480', height: '270', autoplay: true },
-          _react2.default.createElement('source', { src: '', type: 'video/mp4' }),
+          _react2.default.createElement('source', { src: vidName, type: 'video/mp4' }),
           'Your browser does not support the video tag.'
         )
       );

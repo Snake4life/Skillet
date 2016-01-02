@@ -6,12 +6,13 @@ class Watch extends React.Component {
 
 
   render() {
+    var vidName = './videos/' + this.props.params.vKey
     return (
       <div>
       <h3>{this.props.params.vKey}</h3>
 <iframe src="//content.jwplatform.com/players/ZzJi8ynT-9lmC29nz.html" width="480" height="270" frameborder="0" scrolling="auto" allowfullscreen></iframe>
 <video width="480" height="270" autoplay>
-  <source src="" type="video/mp4"/>
+  <source src={vidName} type="video/mp4"/>
 Your browser does not support the video tag.
 </video>
       </div>
