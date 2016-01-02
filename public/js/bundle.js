@@ -759,13 +759,13 @@ var VideoPreview = (function (_React$Component) {
         display: 'inline-block',
         paddingRight: '10px'
       };
-      var vKey = this.props.vkey;
+      var vKey = '/watch/' + this.props.vkey;
       return _react2.default.createElement(
         'li',
         { key: this.props.key, style: listyle },
         _react2.default.createElement(
           _reactRouter.Link,
-          { to: '/watch/', params: { vKey: vKey } },
+          { to: vKey },
           _react2.default.createElement(
             'div',
             { style: divStyle, 'class': 'col-md-4' },
@@ -848,9 +848,20 @@ var Watch = (function (_React$Component) {
     key: 'render',
     value: function render() {
       return _react2.default.createElement(
-        'h3',
+        'div',
         null,
-        'Watch'
+        _react2.default.createElement(
+          'h3',
+          null,
+          this.props.params.vKey
+        ),
+        _react2.default.createElement('iframe', { src: '//content.jwplatform.com/players/ZzJi8ynT-9lmC29nz.html', width: '480', height: '270', frameborder: '0', scrolling: 'auto', allowfullscreen: true }),
+        _react2.default.createElement(
+          'video',
+          { width: '480', height: '270', autoplay: true },
+          _react2.default.createElement('source', { src: '', type: 'video/mp4' }),
+          'Your browser does not support the video tag.'
+        )
       );
     }
   }]);

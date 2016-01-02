@@ -12,10 +12,10 @@ class VideoPreview extends React.Component {
       display: 'inline-block',
       paddingRight: '10px'
     }
-    var vKey = this.props.vkey;
+    var vKey = '/watch/' + this.props.vkey;
     return (
       <li key={this.props.key} style={listyle}>
-      <Link to={'/watch/'} params={{vKey}}>
+      <Link to={vKey}>
       <div style={divStyle} class="col-md-4">
       <div class="thumbnail">
         <img src="./img/videoplaceholder.png" alt=""/>

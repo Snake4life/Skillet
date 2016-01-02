@@ -6,7 +6,7 @@ import Watch from './components/Watch';
 
 export default (
   <Route component={App}>
-    <Route path='/' component={Home} />
-    <Route path='/watch/:vKey' component={Watch} />
+    <Route path='/' component={Home}/>
+      <Route path='/watch/:vKey' component={Watch} />
   </Route>
 );
