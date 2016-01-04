@@ -1,20 +1,28 @@
 import React from 'react';
 import HomeActions from '../actions/WatchActions';
 import HomeStore from '../stores/WatchStore';
+import Video from './Video';
+
 
 class Watch extends React.Component {
 
+  componentDidMount() {
+
+  }
 
   render() {
-    var vidName = './videos/' + this.props.params.vKey
+    var centered = {
+      display: 'block',
+      marginLeft: 'auto',
+      marginRight: 'auto',
+    };
+    var vidName = 'http://videos.thisisepic.com/2b9c1bf3-e19b-4be5-9d36-246c5d3607d8/high.mp4'
     return (
-      <div>
+      <div className="col-md-11 col-centered">
+        <div>
       <h3>{this.props.params.vKey}</h3>
-<iframe src="//content.jwplatform.com/players/ZzJi8ynT-9lmC29nz.html" width="480" height="270" frameborder="0" scrolling="auto" allowfullscreen></iframe>
-<video width="480" height="270" autoplay>
-  <source src={vidName} type="video/mp4"/>
-Your browser does not support the video tag.
-</video>
+      <Video src={vidName} poster="http://thumbnails.thisisepic.com/b1ce00de-e687-4c1b-97ac-afa05a287327/large/frame_0005.png" />
+</div>
       </div>
     );
   }
