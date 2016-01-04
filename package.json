@@ -41,6 +41,7 @@
     "video.js": "^5.4.4",
     "videojs-ads": "0.1.0",
     "videojs-contrib-ads" : "^3.1.2",
+    "videojs-ima" : "^0.1.0",
     "xml2js": "^0.4.15"
   },
   "devDependencies": {
