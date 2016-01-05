@@ -20,8 +20,12 @@ class Video extends React.Component {
   }
 
   loadVideo() {
+    if(this.video || !this.props.src)
+      return;
 
     let node = React.findDOMNode(this.refs.videoPlayer);
+    if(!node)
+      return;
 
     this.video = document.createElement('video');
     this.video.src = this.props.src;
@@ -58,8 +62,6 @@ player.play();
     return <div ref="videoPlayer" />
   }
 }
-
-
 Video.propTypes = {
   poster: React.PropTypes.string,
   src: React.PropTypes.string,

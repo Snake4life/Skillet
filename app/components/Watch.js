@@ -1,13 +1,26 @@
 import React from 'react';
-import HomeActions from '../actions/WatchActions';
-import HomeStore from '../stores/WatchStore';
+import WatchActions from '../actions/WatchActions';
+import WatchStore from '../stores/WatchStore';
 import Video from './Video';
 
 
 class Watch extends React.Component {
-
+  constructor(props) {
+    super(props);
+    this.state = WatchStore.getState();
+    this.onChange = this.onChange.bind(this);
+  }
   componentDidMount() {
+    WatchStore.listen(this.onChange);
+    WatchActions.getVideoInfo(this.props.vKey);
+  }
 
+  componentWillUnmount() {
+    WatchStore.unlisten(this.onChange);
+  }
+
+  onChange(state) {
+    this.setState(state);
   }
 
   render() {
@@ -18,12 +31,28 @@ class Watch extends React.Component {
     };
     var vidName = 'http://videos.thisisepic.com/2b9c1bf3-e19b-4be5-9d36-246c5d3607d8/high.mp4'
     return (
-      <div className="col-md-11 col-centered">
-        <div>
-      <h3>{this.props.params.vKey}</h3>
+      <div className="col-md-12" style={centered}>
+        <div style={centered}>
+      <h3>{this.state.video['title']}</h3>
+      <p>{this.state.video['views'] + ' views'}</p>
+      <div className="row">
+              <div className="col-md-6">
       <Video src={vidName} poster="http://thumbnails.thisisepic.com/b1ce00de-e687-4c1b-97ac-afa05a287327/large/frame_0005.png" />
-</div>
+    </div>
+
+
+  <div className="col-sm-4 col-md-4">
+    <div className="thumbnail">
+      <img src="../img/profileImage.png" alt="" width="100" height="100" />
+      <div className="caption">
+        <h3>{this.state.video['author']}</h3>
+        <p>{this.state.video['description']}</p>
       </div>
+    </div>
+  </div>
+  </div>
+</div>
+</div>
     );
   }
 

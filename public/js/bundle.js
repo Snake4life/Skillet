@@ -157,9 +157,42 @@ var NavbarActions = (function () {
 exports.default = _alt2.default.createActions(NavbarActions);
 
 },{"../alt":5,"underscore":"underscore"}],4:[function(require,module,exports){
-"use strict";
+'use strict';
 
-},{}],5:[function(require,module,exports){
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _alt = require('../alt');
+
+var _alt2 = _interopRequireDefault(_alt);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var WatchActions = (function () {
+  function WatchActions() {
+    _classCallCheck(this, WatchActions);
+
+    this.generateActions('getVideoInfoSuccess', 'getVideoInfoFail');
+  }
+
+  _createClass(WatchActions, [{
+    key: 'getVideoInfo',
+    value: function getVideoInfo(data) {
+      this.actions.getVideoInfoSuccess(data);
+    }
+  }]);
+
+  return WatchActions;
+})();
+
+exports.default = _alt2.default.createActions(WatchActions);
+
+},{"../alt":5}],5:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -765,8 +798,10 @@ var Video = (function (_React$Component) {
   }, {
     key: 'loadVideo',
     value: function loadVideo() {
+      if (this.video || !this.props.src) return;
 
       var node = _react2.default.findDOMNode(this.refs.videoPlayer);
+      if (!node) return;
 
       this.video = document.createElement('video');
       this.video.src = this.props.src;
@@ -956,15 +991,32 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var Watch = (function (_React$Component) {
   _inherits(Watch, _React$Component);
 
-  function Watch() {
+  function Watch(props) {
     _classCallCheck(this, Watch);
 
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(Watch).apply(this, arguments));
+    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Watch).call(this, props));
+
+    _this.state = _WatchStore2.default.getState();
+    _this.onChange = _this.onChange.bind(_this);
+    return _this;
   }
 
   _createClass(Watch, [{
     key: 'componentDidMount',
-    value: function componentDidMount() {}
+    value: function componentDidMount() {
+      _WatchStore2.default.listen(this.onChange);
+      _WatchActions2.default.getVideoInfo(this.props.vKey);
+    }
+  }, {
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      _WatchStore2.default.unlisten(this.onChange);
+    }
+  }, {
+    key: 'onChange',
+    value: function onChange(state) {
+      this.setState(state);
+    }
   }, {
     key: 'render',
     value: function render() {
@@ -976,16 +1028,52 @@ var Watch = (function (_React$Component) {
       var vidName = 'http://videos.thisisepic.com/2b9c1bf3-e19b-4be5-9d36-246c5d3607d8/high.mp4';
       return _react2.default.createElement(
         'div',
-        { className: 'col-md-11 col-centered' },
+        { className: 'col-md-12', style: centered },
         _react2.default.createElement(
           'div',
-          null,
+          { style: centered },
           _react2.default.createElement(
             'h3',
             null,
-            this.props.params.vKey
+            this.state.video['title']
           ),
-          _react2.default.createElement(_Video2.default, { src: vidName, poster: 'http://thumbnails.thisisepic.com/b1ce00de-e687-4c1b-97ac-afa05a287327/large/frame_0005.png' })
+          _react2.default.createElement(
+            'p',
+            null,
+            this.state.video['views'] + ' views'
+          ),
+          _react2.default.createElement(
+            'div',
+            { className: 'row' },
+            _react2.default.createElement(
+              'div',
+              { className: 'col-md-6' },
+              _react2.default.createElement(_Video2.default, { src: vidName, poster: 'http://thumbnails.thisisepic.com/b1ce00de-e687-4c1b-97ac-afa05a287327/large/frame_0005.png' })
+            ),
+            _react2.default.createElement(
+              'div',
+              { className: 'col-sm-4 col-md-4' },
+              _react2.default.createElement(
+                'div',
+                { className: 'thumbnail' },
+                _react2.default.createElement('img', { src: '../img/profileImage.png', alt: '', width: '100', height: '100' }),
+                _react2.default.createElement(
+                  'div',
+                  { className: 'caption' },
+                  _react2.default.createElement(
+                    'h3',
+                    null,
+                    this.state.video['author']
+                  ),
+                  _react2.default.createElement(
+                    'p',
+                    null,
+                    this.state.video['description']
+                  )
+                )
+              )
+            )
+          )
         )
       );
     }
@@ -1262,9 +1350,56 @@ var NavbarStore = (function () {
 exports.default = _alt2.default.createStore(NavbarStore);
 
 },{"../actions/NavbarActions":3,"../alt":5}],18:[function(require,module,exports){
-"use strict";
+'use strict';
 
-},{}],19:[function(require,module,exports){
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _alt = require('../alt');
+
+var _alt2 = _interopRequireDefault(_alt);
+
+var _WatchActions = require('../actions/WatchActions');
+
+var _WatchActions2 = _interopRequireDefault(_WatchActions);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var WatchStore = (function () {
+  function WatchStore() {
+    _classCallCheck(this, WatchStore);
+
+    this.bindActions(_WatchActions2.default);
+    this.video = {
+      'title': '',
+      'author': '',
+      'description': '',
+      'views': '138,107',
+      'comments': [{}]
+    };
+  }
+
+  _createClass(WatchStore, [{
+    key: 'onGetVideoInfoSuccess',
+    value: function onGetVideoInfoSuccess(data) {
+      this.video['title'] = 'How To: Jump Start a Car';
+      this.video['author'] = 'CarExpert9';
+      this.video['description'] = 'Jump start a Car. Anyone who drives should know how to safely jump start' + 'their car because one day your battery will be dead. Whether you left your' + 'lights on or your battery goes bad, knowing how to jump your car safely' + 'and properly will keep you from getting stranded. ';
+      this.video['views'] = '138,107';
+    }
+  }]);
+
+  return WatchStore;
+})();
+
+exports.default = _alt2.default.createStore(WatchStore);
+
+},{"../actions/WatchActions":4,"../alt":5}],19:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
