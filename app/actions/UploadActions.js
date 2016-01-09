@@ -1,16 +1,12 @@
 import alt from '../alt';
 
-class WatchActions {
+class UploadActions {
   constructor() {
     this.generateActions(
       'getVideoInfoSuccess',
       'getVideoInfoFail'
     );
     }
-
-  getVideoInfo(vKey) {
-    this.actions.getVideoInfoSuccess(vKey);
-  }
   }
 
-export default alt.createActions(WatchActions);
+export default alt.createActions(UploadActions);
