@@ -1,7 +1,18 @@
 import React from 'react';
 import {Link} from 'react-router';
+import AuthActions from '../actions/AuthActions';
 
 class Login extends React.Component {
+  constructor() {
+    super();
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
+    const username = 'john.doe@gmail.com'
+    const password = 'foobar'
+    AuthActions.loginUser(username, password);
+  }
   render() {
     return(
       <div className='container'>
@@ -12,10 +23,10 @@ class Login extends React.Component {
   <div className='panel-body'>
   <div className="login jumbotron center-block">
   <h1>Login</h1>
-  <form role="form">
+  <form role="form" onSubmit={this.handleSubmit.bind(this)}>
   <div className="form-group">
     <label htmlFor="username">Username</label>
-    <input type="email" ref="email" className="form-control" placeholder="Email"/>
+    <input type="text" ref="username" className="form-control" placeholder="Username"/>
   </div>
   <div className="form-group">
     <label htmlFor="password">Password</label>

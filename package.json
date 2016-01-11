@@ -28,6 +28,7 @@
     "express-jwt": "3.3.0",
     "history": "^1.13.0",
     "jsonwebtoken" : "5.5.4",
+    "jwt-decode": "1.5.0",
     "mongoose": "^4.2.5",
     "morgan": "^1.6.1",
     "lodash": "^3.10.1",
