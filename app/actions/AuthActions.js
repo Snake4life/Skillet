@@ -7,12 +7,12 @@ class AuthActions {
       'loginUserFail',
       'logoutUserSuccess',
       'logoutUserFail',
-      'userLoggedInSuccess'
+      'autoLoginSuccess'
     );
   }
 
   loginUser(user, pass) {
-    var savedJwt = window.localStorage.getItem('jwt');
+    var savedJwt = localStorage.getItem('jwt');
     if(savedJwt) {
       var data = {
         token: savedJwt
@@ -38,6 +38,16 @@ class AuthActions {
       });
     }
 
+  }
+
+  autoLogin() {
+    var token = localStorage.getItem('jwt');
+    if(token) {
+      var data = {
+        token: token
+      };
+      this.actions.autoLoginSuccess(data)
+    }
   }
 
 }

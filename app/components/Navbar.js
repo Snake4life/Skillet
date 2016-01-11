@@ -2,20 +2,23 @@ import React from 'react';
 import {Link} from 'react-router';
 import NavbarStore from '../stores/NavbarStore';
 import NavbarActions from '../actions/NavbarActions';
-
-//import UserActions from '../actions/UserActions';
+import AuthStore from '../stores/AuthStore';
+import AuthActions from '../actions/AuthActions';
 
 class Navbar extends React.Component {
   constructor(props) {
     super(props);
     this.state = NavbarStore.getState();
     this.onChange = this.onChange.bind(this);
+
   }
 
   componentDidMount() {
     NavbarStore.listen(this.onChange);
     NavbarActions.getCharacterCount();
-
+    AuthActions.autoLogin();
+    let user = AuthStore.state._user;
+    console.log(user.first_name);
     let socket = io.connect();
 
     socket.on('onlineUsers', (data) => {
@@ -93,6 +96,11 @@ class Navbar extends React.Component {
           <ul className='nav navbar-nav'>
                 <li><Link to='/login'>Login</Link></li>
                 <li><Link to='/login'>Register</Link></li>
+                  {this.props.loggedIn ? (
+                <Link to="/logout">Log out</Link>
+              ) : (
+                <Link to="/login">Sign in</Link>
+              )}
           </ul>
         </div>
       </nav>

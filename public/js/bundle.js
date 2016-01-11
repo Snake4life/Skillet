@@ -19,7 +19,7 @@ var AuthActions = (function () {
   function AuthActions() {
     _classCallCheck(this, AuthActions);
 
-    this.generateActions('loginUserSuccess', 'loginUserFail', 'logoutUserSuccess', 'logoutUserFail', 'userLoggedInSuccess');
+    this.generateActions('loginUserSuccess', 'loginUserFail', 'logoutUserSuccess', 'logoutUserFail', 'autoLoginSuccess');
   }
 
   _createClass(AuthActions, [{
@@ -27,7 +27,7 @@ var AuthActions = (function () {
     value: function loginUser(user, pass) {
       var _this = this;
 
-      var savedJwt = window.localStorage.getItem('jwt');
+      var savedJwt = localStorage.getItem('jwt');
       if (savedJwt) {
         var data = {
           token: savedJwt
@@ -49,6 +49,17 @@ var AuthActions = (function () {
             _this.actions.loginUserFail(jqXhr);
           });
         }
+    }
+  }, {
+    key: 'autoLogin',
+    value: function autoLogin() {
+      var token = localStorage.getItem('jwt');
+      if (token) {
+        var data = {
+          token: token
+        };
+        this.actions.autoLoginSuccess(data);
+      }
     }
   }]);
 
@@ -265,7 +276,11 @@ var WatchActions = (function () {
   _createClass(WatchActions, [{
     key: 'getVideoInfo',
     value: function getVideoInfo(vKey) {
-      this.actions.getVideoInfoSuccess(vKey);
+      if (vKey) {
+        this.actions.getVideoInfoSuccess(vKey);
+      } else {
+        this.actions.getVideoInfoFail();
+      }
     }
   }]);
 
@@ -318,6 +333,10 @@ var _AuthActions = require('../actions/AuthActions');
 
 var _AuthActions2 = _interopRequireDefault(_AuthActions);
 
+var _alt = require('../alt');
+
+var _alt2 = _interopRequireDefault(_alt);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -343,6 +362,8 @@ var App = (function (_React$Component) {
     key: 'componentDidMount',
     value: function componentDidMount() {
       _AuthStore2.default.listen(this.onChange);
+      console.log(this.state._user);
+      _AuthActions2.default.autoLogin();
     }
   }, {
     key: 'onChange',
@@ -350,9 +371,9 @@ var App = (function (_React$Component) {
       this.setState(state);
     }
   }, {
-    key: 'componentDidMount',
-    value: function componentDidMount() {
-      _AuthActions2.default.loginUser();
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      _AuthStore2.default.unlisten(this.onChange);
     }
   }, {
     key: 'render',
@@ -372,7 +393,7 @@ var App = (function (_React$Component) {
 
 exports.default = App;
 
-},{"../actions/AuthActions":1,"../stores/AuthStore":19,"./Footer":9,"./Navbar":12,"react":"react"}],9:[function(require,module,exports){
+},{"../actions/AuthActions":1,"../alt":7,"../stores/AuthStore":19,"./Footer":9,"./Navbar":12,"react":"react"}],9:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -803,6 +824,14 @@ var _NavbarActions = require('../actions/NavbarActions');
 
 var _NavbarActions2 = _interopRequireDefault(_NavbarActions);
 
+var _AuthStore = require('../stores/AuthStore');
+
+var _AuthStore2 = _interopRequireDefault(_AuthStore);
+
+var _AuthActions = require('../actions/AuthActions');
+
+var _AuthActions2 = _interopRequireDefault(_AuthActions);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -810,8 +839,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-//import UserActions from '../actions/UserActions';
 
 var Navbar = (function (_React$Component) {
   _inherits(Navbar, _React$Component);
@@ -823,6 +850,7 @@ var Navbar = (function (_React$Component) {
 
     _this.state = _NavbarStore2.default.getState();
     _this.onChange = _this.onChange.bind(_this);
+
     return _this;
   }
 
@@ -831,7 +859,9 @@ var Navbar = (function (_React$Component) {
     value: function componentDidMount() {
       _NavbarStore2.default.listen(this.onChange);
       _NavbarActions2.default.getCharacterCount();
-
+      _AuthActions2.default.autoLogin();
+      var user = _AuthStore2.default.state._user;
+      console.log(user.first_name);
       var socket = io.connect();
 
       socket.on('onlineUsers', function (data) {
@@ -959,6 +989,15 @@ var Navbar = (function (_React$Component) {
                 { to: '/login' },
                 'Register'
               )
+            ),
+            this.props.loggedIn ? _react2.default.createElement(
+              _reactRouter.Link,
+              { to: '/logout' },
+              'Log out'
+            ) : _react2.default.createElement(
+              _reactRouter.Link,
+              { to: '/login' },
+              'Sign in'
             )
           )
         )
@@ -975,7 +1014,7 @@ Navbar.contextTypes = {
 
 exports.default = Navbar;
 
-},{"../actions/NavbarActions":4,"../stores/NavbarStore":22,"react":"react","react-router":"react-router"}],13:[function(require,module,exports){
+},{"../actions/AuthActions":1,"../actions/NavbarActions":4,"../stores/AuthStore":19,"../stores/NavbarStore":22,"react":"react","react-router":"react-router"}],13:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1163,6 +1202,10 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _reactDom = require('react-dom');
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1212,23 +1255,20 @@ var Video = (function (_React$Component) {
       this.video.className = this.props.className;
       node.appendChild(this.video);
       var player = videojs(this.video, this.props);
+
       var options = {
         id: 'videoPlayer',
         adTagUrl: 'http://pubads.g.doubleclick.net/gampad/ads?sz=640x480&' + 'iu=/124319096/external/ad_rule_samples&ciu_szs=300x250&ad_rule=1&' + 'impl=s&gdfp_req=1&env=vp&output=xml_vmap1&unviewed_position_start=1&' + 'cust_params=sample_ar%3Dpremidpostpod%26deployment%3Dgmf-js&cmsid=496&' + 'vid=short_onecue&correlator='
       };
       player.ima(options);
-      /*
-      player.one(startEvent, function() {
-          player.ima.initializeAdDisplayContainer();
-          player.ima.requestAds();
-          player.play();
-      });*/
+
       player.ima.requestAds();
       // On mobile devices, you must call initializeAdDisplayContainer as the result
       // of a user action (e.g. button click). If you do not make this call, the SDK
       // will make it for you, but not as the result of a user action. For more info
       // see our examples, all of which are set up to work on mobile devices.
       // player.ima.initializeAdDisplayContainer();
+
       player.play();
     }
   }, {
@@ -1266,7 +1306,7 @@ Video.defaultProps = {
 
 exports.default = Video;
 
-},{"react":"react"}],15:[function(require,module,exports){
+},{"react":"react","react-dom":"react-dom"}],15:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1400,6 +1440,9 @@ var Watch = (function (_React$Component) {
 
     _this.state = _WatchStore2.default.getState();
     _this.onChange = _this.onChange.bind(_this);
+    var vKey = _this.props.params;
+    console.log(vKey);
+    _WatchActions2.default.getVideoInfo(vKey);
     return _this;
   }
 
@@ -1407,7 +1450,6 @@ var Watch = (function (_React$Component) {
     key: 'componentDidMount',
     value: function componentDidMount() {
       _WatchStore2.default.listen(this.onChange);
-      _WatchActions2.default.getVideoInfo(this.props.vKey);
     }
   }, {
     key: 'componentWillUnmount',
@@ -1602,13 +1644,10 @@ var AuthStore = (function () {
   }
 
   _createClass(AuthStore, [{
-    key: 'userLoggedIn',
-    value: function userLoggedIn() {
-      var token = localStorage.getItem('jwt');
-      console.log(token);
-      this._jwt = token;
-      this._user = (0, _jwtDecode2.default)(token);
-      console.log(this._jwt);
+    key: 'onAutoLoginSuccess',
+    value: function onAutoLoginSuccess(data) {
+      this._jwt = data.token;
+      this._user = (0, _jwtDecode2.default)(data.token);
     }
   }, {
     key: 'onLoginUserSuccess',
@@ -1629,13 +1668,8 @@ var AuthStore = (function () {
       return this._user;
     }
   }, {
-    key: 'getToken',
-    value: function getToken() {
-      return localStorage.getItem('jwt');
-    }
-  }, {
-    key: 'isLoggedIn',
-    value: function isLoggedIn() {
+    key: 'onIsLoggedIn',
+    value: function onIsLoggedIn() {
       return !!this._user;
     }
   }]);
@@ -1913,6 +1947,14 @@ var WatchStore = (function () {
       this.video['author'] = 'CarExpert9';
       this.video['description'] = 'Jump start a Car. Anyone who drives should know how to safely jump start' + 'their car because one day your battery will be dead. Whether you left your' + 'lights on or your battery goes bad, knowing how to jump your car safely' + 'and properly will keep you from getting stranded. ';
       this.video['views'] = '138,107';
+    }
+  }, {
+    key: 'onGetVideoInfoFail',
+    value: function onGetVideoInfoFail() {
+      this.video['title'] = 'Title Not Found';
+      this.video['author'] = 'Error';
+      this.video['description'] = 'Error';
+      this.video['views'] = 'Error';
     }
   }]);
 

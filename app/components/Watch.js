@@ -9,10 +9,12 @@ class Watch extends React.Component {
     super(props);
     this.state = WatchStore.getState();
     this.onChange = this.onChange.bind(this);
+    var vKey = this.props.params;
+    console.log(vKey);
+    WatchActions.getVideoInfo(vKey);
   }
   componentDidMount() {
     WatchStore.listen(this.onChange);
-    WatchActions.getVideoInfo(this.props.vKey);
   }
 
   componentWillUnmount() {
@@ -22,6 +24,8 @@ class Watch extends React.Component {
   onChange(state) {
     this.setState(state);
   }
+
+
 
   render() {
     var centered = {

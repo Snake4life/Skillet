@@ -22,6 +22,13 @@ class WatchStore {
                     'and properly will keep you from getting stranded. '
     this.video['views'] = '138,107';
   }
+
+  onGetVideoInfoFail() {
+    this.video['title'] = 'Title Not Found';
+    this.video['author'] = 'Error';
+    this.video['description'] =  'Error'
+    this.video['views'] = 'Error';
+  }
 }
 
 export default alt.createStore(WatchStore);

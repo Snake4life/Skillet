@@ -1,7 +1,8 @@
 import React from 'react';
-
+import ReactDOM from 'react-dom';
 
 class Video extends React.Component {
+
 
 
   componentDidMount() {
@@ -27,6 +28,7 @@ class Video extends React.Component {
     if(!node)
       return;
 
+
     this.video = document.createElement('video');
     this.video.src = this.props.src;
     this.video.width = this.props.width;
@@ -34,6 +36,7 @@ class Video extends React.Component {
     this.video.className = this.props.className;
     node.appendChild(this.video);
     var player = videojs(this.video, this.props);
+
     var options = {
       id: 'videoPlayer',
       adTagUrl: 'http://pubads.g.doubleclick.net/gampad/ads?sz=640x480&' +
@@ -43,18 +46,14 @@ class Video extends React.Component {
       'vid=short_onecue&correlator='
     };
     player.ima(options);
-    /*
-    player.one(startEvent, function() {
-        player.ima.initializeAdDisplayContainer();
-        player.ima.requestAds();
-        player.play();
-    });*/
+
     player.ima.requestAds();
 // On mobile devices, you must call initializeAdDisplayContainer as the result
 // of a user action (e.g. button click). If you do not make this call, the SDK
 // will make it for you, but not as the result of a user action. For more info
 // see our examples, all of which are set up to work on mobile devices.
 // player.ima.initializeAdDisplayContainer();
+
 player.play();
   }
 

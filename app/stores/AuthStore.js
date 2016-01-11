@@ -10,12 +10,9 @@ class AuthStore {
     this._jwt = null;
   }
 
-  userLoggedIn() {
-    var token = localStorage.getItem('jwt');
-    console.log(token);
-    this._jwt = token;
-    this._user = jwt_decode(token);
-    console.log(this._jwt);
+  onAutoLoginSuccess(data) {
+    this._jwt = data.token;
+    this._user = jwt_decode(data.token);
   }
 
   onLoginUserSuccess(data) {
@@ -33,11 +30,7 @@ class AuthStore {
     return this._user
   }
 
-  getToken() {
-    return localStorage.getItem('jwt');
-  }
-
-  isLoggedIn() {
+  onIsLoggedIn() {
     return !!this._user;
   }
 
