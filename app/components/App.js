@@ -8,22 +8,7 @@ import alt from '../alt';
 class App extends React.Component {
   constructor() {
     super();
-    this.state = AuthStore.getState();
-    this.onChange = this.onChange.bind(this);
-  }
 
-  componentDidMount() {
-    AuthStore.listen(this.onChange);
-    console.log(this.state._user);
-    AuthActions.autoLogin();
-  }
-
-  onChange(state) {
-    this.setState(state);
-  }
-
-  componentWillUnmount() {
-    AuthStore.unlisten(this.onChange);
   }
 
   render() {

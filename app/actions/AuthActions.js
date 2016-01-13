@@ -7,11 +7,14 @@ class AuthActions {
       'loginUserFail',
       'logoutUserSuccess',
       'logoutUserFail',
-      'autoLoginSuccess'
+      'autoLoginSuccess',
+      'logoutSuccess',
+      'isLoggedIn'
     );
   }
 
   loginUser(user, pass) {
+    localStorage.removeItem('jwt');
     var savedJwt = localStorage.getItem('jwt');
     if(savedJwt) {
       var data = {
@@ -19,7 +22,6 @@ class AuthActions {
       };
       console.log('User is already logged in');
       this.actions.loginUserSuccess(data);
-//      localStorage.removeItem('jwt');
     }
     else {
       $.ajax({
@@ -40,7 +42,13 @@ class AuthActions {
 
   }
 
+  logoutUser() {
+    localStorage.removeItem('jwt');
+    this.actions.logoutSuccess();
+  }
+
   autoLogin() {
+    console.log('Attempting autologin...');
     var token = localStorage.getItem('jwt');
     if(token) {
       var data = {

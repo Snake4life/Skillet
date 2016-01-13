@@ -22,6 +22,11 @@ class AuthStore {
     localStorage.setItem('jwt', this._jwt);
   }
 
+  onLogoutSuccess() {
+    this._user = null;
+    this._jwt = null;
+  }
+
   onLoginUserFail(data) {
     console.log("FAILL");
   }
@@ -31,7 +36,12 @@ class AuthStore {
   }
 
   onIsLoggedIn() {
-    return !!this._user;
+    if (this._user) {
+      return true
+    }
+    else {
+      return false
+    }
   }
 
 }

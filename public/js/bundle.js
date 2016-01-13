@@ -19,7 +19,7 @@ var AuthActions = (function () {
   function AuthActions() {
     _classCallCheck(this, AuthActions);
 
-    this.generateActions('loginUserSuccess', 'loginUserFail', 'logoutUserSuccess', 'logoutUserFail', 'autoLoginSuccess');
+    this.generateActions('loginUserSuccess', 'loginUserFail', 'logoutUserSuccess', 'logoutUserFail', 'autoLoginSuccess', 'logoutSuccess', 'isLoggedIn');
   }
 
   _createClass(AuthActions, [{
@@ -27,6 +27,7 @@ var AuthActions = (function () {
     value: function loginUser(user, pass) {
       var _this = this;
 
+      localStorage.removeItem('jwt');
       var savedJwt = localStorage.getItem('jwt');
       if (savedJwt) {
         var data = {
@@ -34,25 +35,31 @@ var AuthActions = (function () {
         };
         console.log('User is already logged in');
         this.actions.loginUserSuccess(data);
-        //      localStorage.removeItem('jwt');
       } else {
-          $.ajax({
-            url: '/api/authenticate',
-            method: 'POST',
-            data: {
-              username: user,
-              password: pass
-            }
-          }).done(function (data) {
-            _this.actions.loginUserSuccess(data);
-          }).fail(function (jqXhr) {
-            _this.actions.loginUserFail(jqXhr);
-          });
-        }
+        $.ajax({
+          url: '/api/authenticate',
+          method: 'POST',
+          data: {
+            username: user,
+            password: pass
+          }
+        }).done(function (data) {
+          _this.actions.loginUserSuccess(data);
+        }).fail(function (jqXhr) {
+          _this.actions.loginUserFail(jqXhr);
+        });
+      }
+    }
+  }, {
+    key: 'logoutUser',
+    value: function logoutUser() {
+      localStorage.removeItem('jwt');
+      this.actions.logoutSuccess();
     }
   }, {
     key: 'autoLogin',
     value: function autoLogin() {
+      console.log('Attempting autologin...');
       var token = localStorage.getItem('jwt');
       if (token) {
         var data = {
@@ -190,7 +197,7 @@ var NavbarActions = (function () {
   function NavbarActions() {
     _classCallCheck(this, NavbarActions);
 
-    this.generateActions('updateOnlineUsers', 'updateAjaxAnimation', 'updateSearchQuery', 'getCharacterCountSuccess', 'getCharacterCountFail', 'findCharacterSuccess', 'findCharacterFail');
+    this.generateActions('updateOnlineUsers', 'updateAjaxAnimation', 'updateSearchQuery', 'getCharacterCountSuccess', 'getCharacterCountFail', 'findCharacterSuccess', 'findCharacterFail', 'autoLogAttempt');
   }
 
   _createClass(NavbarActions, [{
@@ -351,31 +358,10 @@ var App = (function (_React$Component) {
   function App() {
     _classCallCheck(this, App);
 
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(App).call(this));
-
-    _this.state = _AuthStore2.default.getState();
-    _this.onChange = _this.onChange.bind(_this);
-    return _this;
+    return _possibleConstructorReturn(this, Object.getPrototypeOf(App).call(this));
   }
 
   _createClass(App, [{
-    key: 'componentDidMount',
-    value: function componentDidMount() {
-      _AuthStore2.default.listen(this.onChange);
-      console.log(this.state._user);
-      _AuthActions2.default.autoLogin();
-    }
-  }, {
-    key: 'onChange',
-    value: function onChange(state) {
-      this.setState(state);
-    }
-  }, {
-    key: 'componentWillUnmount',
-    value: function componentWillUnmount() {
-      _AuthStore2.default.unlisten(this.onChange);
-    }
-  }, {
     key: 'render',
     value: function render() {
       return _react2.default.createElement(
@@ -698,6 +684,8 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRouter = require('react-router');
 
+var _reactRouter2 = _interopRequireDefault(_reactRouter);
+
 var _AuthActions = require('../actions/AuthActions');
 
 var _AuthActions2 = _interopRequireDefault(_AuthActions);
@@ -716,7 +704,10 @@ var Login = (function (_React$Component) {
   function Login() {
     _classCallCheck(this, Login);
 
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(Login).call(this));
+    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Login).call(this));
+
+    mixins: [_reactRouter2.default.Navigation];
+    return _this;
   }
 
   _createClass(Login, [{
@@ -726,6 +717,7 @@ var Login = (function (_React$Component) {
       var username = 'john.doe@gmail.com';
       var password = 'foobar';
       _AuthActions2.default.loginUser(username, password);
+      this.context.router.transitionTo('/');
     }
   }, {
     key: 'render',
@@ -799,6 +791,10 @@ var Login = (function (_React$Component) {
   return Login;
 })(_react2.default.Component);
 
+Login.contextTypes = {
+  router: _react2.default.PropTypes.func.isRequired
+};
+
 exports.default = Login;
 
 },{"../actions/AuthActions":1,"react":"react","react-router":"react-router"}],12:[function(require,module,exports){
@@ -850,7 +846,6 @@ var Navbar = (function (_React$Component) {
 
     _this.state = _NavbarStore2.default.getState();
     _this.onChange = _this.onChange.bind(_this);
-
     return _this;
   }
 
@@ -858,12 +853,7 @@ var Navbar = (function (_React$Component) {
     key: 'componentDidMount',
     value: function componentDidMount() {
       _NavbarStore2.default.listen(this.onChange);
-      _NavbarActions2.default.getCharacterCount();
-      _AuthActions2.default.autoLogin();
-      var user = _AuthStore2.default.state._user;
-      console.log(user.first_name);
       var socket = io.connect();
-
       socket.on('onlineUsers', function (data) {
         _NavbarActions2.default.updateOnlineUsers(data);
       });
@@ -906,6 +896,56 @@ var Navbar = (function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
+      console.log(_AuthStore2.default.state._user);
+
+      if (_AuthStore2.default.state._user) {
+        console.log('You are logged in');
+        var loginList = _react2.default.createElement(
+          'ul',
+          { className: 'nav navbar-nav' },
+          _react2.default.createElement(
+            'li',
+            null,
+            _react2.default.createElement(
+              'button',
+              { className: 'btn btn-default navbar-btn' },
+              'Upload'
+            )
+          ),
+          _react2.default.createElement(
+            'li',
+            null,
+            _react2.default.createElement(
+              _reactRouter.Link,
+              { to: 'logout' },
+              'Log Out'
+            )
+          )
+        );
+      } else if (!_AuthStore2.default.state._user) {
+        var loginList = _react2.default.createElement(
+          'ul',
+          { className: 'nav navbar-nav' },
+          _react2.default.createElement(
+            'li',
+            null,
+            _react2.default.createElement(
+              _reactRouter.Link,
+              { to: '/login' },
+              'Login'
+            )
+          ),
+          _react2.default.createElement(
+            'li',
+            null,
+            _react2.default.createElement(
+              _reactRouter.Link,
+              { to: '/register' },
+              'Register'
+            )
+          )
+        );
+      }
       return _react2.default.createElement(
         'nav',
         { className: 'navbar navbar-default navbar-static-top' },
@@ -969,37 +1009,7 @@ var Navbar = (function (_React$Component) {
               )
             )
           ),
-          _react2.default.createElement(
-            'ul',
-            { className: 'nav navbar-nav' },
-            _react2.default.createElement(
-              'li',
-              null,
-              _react2.default.createElement(
-                _reactRouter.Link,
-                { to: '/login' },
-                'Login'
-              )
-            ),
-            _react2.default.createElement(
-              'li',
-              null,
-              _react2.default.createElement(
-                _reactRouter.Link,
-                { to: '/login' },
-                'Register'
-              )
-            ),
-            this.props.loggedIn ? _react2.default.createElement(
-              _reactRouter.Link,
-              { to: '/logout' },
-              'Log out'
-            ) : _react2.default.createElement(
-              _reactRouter.Link,
-              { to: '/login' },
-              'Sign in'
-            )
-          )
+          loginList
         )
       );
     }
@@ -1551,17 +1561,25 @@ var _routes = require('./routes');
 
 var _routes2 = _interopRequireDefault(_routes);
 
+var _AuthActions = require('./actions/AuthActions');
+
+var _AuthActions2 = _interopRequireDefault(_AuthActions);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var history = (0, _createBrowserHistory2.default)();
 
+var jwt = localStorage.getItem('jwt');
+if (jwt) {
+        _AuthActions2.default.autoLogin();
+}
 _reactDom2.default.render(_react2.default.createElement(
-  _reactRouter2.default,
-  { history: history },
-  _routes2.default
+        _reactRouter2.default,
+        { history: history },
+        _routes2.default
 ), document.getElementById('app'));
 
-},{"./routes":18,"history/lib/createBrowserHistory":251,"react":"react","react-dom":"react-dom","react-router":"react-router"}],18:[function(require,module,exports){
+},{"./actions/AuthActions":1,"./routes":18,"history/lib/createBrowserHistory":251,"react":"react","react-dom":"react-dom","react-router":"react-router"}],18:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1658,6 +1676,12 @@ var AuthStore = (function () {
       localStorage.setItem('jwt', this._jwt);
     }
   }, {
+    key: 'onLogoutSuccess',
+    value: function onLogoutSuccess() {
+      this._user = null;
+      this._jwt = null;
+    }
+  }, {
     key: 'onLoginUserFail',
     value: function onLoginUserFail(data) {
       console.log("FAILL");
@@ -1670,7 +1694,11 @@ var AuthStore = (function () {
   }, {
     key: 'onIsLoggedIn',
     value: function onIsLoggedIn() {
-      return !!this._user;
+      if (this._user) {
+        return true;
+      } else {
+        return false;
+      }
     }
   }]);
 

@@ -10,7 +10,8 @@ class NavbarActions {
       'getCharacterCountSuccess',
       'getCharacterCountFail',
       'findCharacterSuccess',
-      'findCharacterFail'
+      'findCharacterFail',
+      'autoLogAttempt'
     );
   }
 

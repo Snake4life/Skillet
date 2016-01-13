@@ -10,17 +10,11 @@ class Navbar extends React.Component {
     super(props);
     this.state = NavbarStore.getState();
     this.onChange = this.onChange.bind(this);
-
   }
 
   componentDidMount() {
     NavbarStore.listen(this.onChange);
-    NavbarActions.getCharacterCount();
-    AuthActions.autoLogin();
-    let user = AuthStore.state._user;
-    console.log(user.first_name);
     let socket = io.connect();
-
     socket.on('onlineUsers', (data) => {
       NavbarActions.updateOnlineUsers(data);
     });
@@ -59,6 +53,25 @@ class Navbar extends React.Component {
   }
 
   render() {
+    console.log(AuthStore.state._user);
+
+    if(AuthStore.state._user) {
+      console.log('You are logged in');
+      var loginList = (
+        <ul className='nav navbar-nav'>
+          <li><button className='btn btn-default navbar-btn'>Upload</button></li>
+          <li><Link to='logout'>Log Out</Link></li>
+        </ul>
+      );
+
+    } else if(!AuthStore.state._user){
+      var loginList = (
+        <ul className='nav navbar-nav'>
+          <li><button onClick={this.className='btn btn-default navbar-btn'>Upload</button></li>
+          <li><Link to='/register'>Sign Up</Link></li>
+        </ul>
+    );
+    }
     return (
       <nav className='navbar navbar-default navbar-static-top'>
         <div className='navbar-header'>
@@ -93,15 +106,9 @@ class Navbar extends React.Component {
               </span>
             </div>
           </form>
-          <ul className='nav navbar-nav'>
-                <li><Link to='/login'>Login</Link></li>
-                <li><Link to='/login'>Register</Link></li>
-                  {this.props.loggedIn ? (
-                <Link to="/logout">Log out</Link>
-              ) : (
-                <Link to="/login">Sign in</Link>
-              )}
-          </ul>
+
+            {loginList}
+
         </div>
       </nav>
     );

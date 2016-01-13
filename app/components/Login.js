@@ -1,10 +1,13 @@
 import React from 'react';
 import {Link} from 'react-router';
 import AuthActions from '../actions/AuthActions';
+import Router from 'react-router';
 
 class Login extends React.Component {
   constructor() {
     super();
+
+    mixins : [Router.Navigation]
   }
 
   handleSubmit(e) {
@@ -12,6 +15,7 @@ class Login extends React.Component {
     const username = 'john.doe@gmail.com'
     const password = 'foobar'
     AuthActions.loginUser(username, password);
+    this.context.router.transitionTo('/');
   }
   render() {
     return(
@@ -43,5 +47,9 @@ class Login extends React.Component {
     );
   }
 }
+
+Login.contextTypes = {
+  router: React.PropTypes.func.isRequired
+};
 
 export default Login;
