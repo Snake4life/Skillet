@@ -9,7 +9,9 @@ class AuthActions {
       'logoutUserFail',
       'autoLoginSuccess',
       'logoutSuccess',
-      'isLoggedIn'
+      'isLoggedIn',
+      'registerUserSuccess',
+      'registerUserFail'
     );
   }
 
@@ -40,6 +42,20 @@ class AuthActions {
       });
     }
 
+  }
+
+  registerUser(payload) {
+    $.ajax({
+      url: 'api/register',
+      data: { name: payload}
+    })
+     .done((data) => {
+       assign(payload, data);
+       this.actions.registerUserSuccess(payload);
+     })
+     .fail(() => {
+       this.actions.registerUserFail(payload);
+     });
   }
 
   logoutUser() {

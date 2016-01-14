@@ -20,6 +20,7 @@ class AuthStore {
     this._user = jwt_decode(data.token);
     console.log(this._user);
     localStorage.setItem('jwt', this._jwt);
+        window.location.assign("/");
   }
 
   onLogoutSuccess() {

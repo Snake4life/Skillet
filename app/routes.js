@@ -5,6 +5,8 @@ import Home from './components/Home';
 import Watch from './components/Watch';
 import Upload from './components/Upload';
 import Login from './components/Login';
+import Signup from './components/Signup';
+import Logout from './components/Logout';
 
 export default (
   <Route component={App}>
@@ -12,5 +14,7 @@ export default (
       <Route path='/watch/:vKey' component={Watch} />
       <Route path='/upload' component={Upload} />
       <Route path='/login' component={Login} />
+      <Route path='/signup' component={Signup} />
+      <Route path='/logout' component={Logout} />
   </Route>
 );

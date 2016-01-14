@@ -24,8 +24,9 @@ class Video extends React.Component {
     if(this.video || !this.props.src)
       return;
 
-    let node = React.findDOMNode(this.refs.videoPlayer);
-    if(!node)
+//    let node = React.findDOMNode(this.refs.videoPlayer);
+    let node = ReactDOM.findDOMNode(this.refs.videoPlayer);
+    if(!node) 
       return;
 
 
