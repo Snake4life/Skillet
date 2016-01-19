@@ -10,9 +10,9 @@ class Login extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    const username = 'john.doe@gmail.com'
-    const password = 'foobar'
-    AuthActions.loginUser(username, password);
+    const email = 'aaa@gmail.com'
+    const password = 'aaa'
+    AuthActions.loginUser({email: email, password: password});
   }
   render() {
     return(

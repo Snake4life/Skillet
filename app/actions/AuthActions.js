@@ -9,32 +9,24 @@ class AuthActions {
       'logoutUserFail',
       'autoLoginSuccess',
       'logoutSuccess',
+      'logoutFail',
       'isLoggedIn',
       'registerUserSuccess',
       'registerUserFail'
     );
   }
 
-  loginUser(user, pass) {
-    localStorage.removeItem('jwt');
-    var savedJwt = localStorage.getItem('jwt');
-    if(savedJwt) {
-      var data = {
-        token: savedJwt
-      };
-      console.log('User is already logged in');
-      this.actions.loginUserSuccess(data);
-    }
-    else {
+  loginUser(payload) {
       $.ajax({
-        url: '/api/authenticate',
+        url: 'api/login',
         method: 'POST',
         data: {
-          username: user,
-          password: pass
+          email: payload.email,
+          password: payload.password
         }
       })
       .done((data) => {
+        console.log(data);
         this.actions.loginUserSuccess(data)
       })
       .fail((jqXhr) => {
@@ -42,25 +34,15 @@ class AuthActions {
       });
     }
 
-  }
-
-  registerUser(payload) {
-    $.ajax({
-      url: 'api/register',
-      data: { name: payload}
-    })
-     .done((data) => {
-       assign(payload, data);
-       this.actions.registerUserSuccess(payload);
-     })
-     .fail(() => {
-       this.actions.registerUserFail(payload);
-     });
-  }
 
   logoutUser() {
     localStorage.removeItem('jwt');
-    this.actions.logoutSuccess();
+    var token = localStorage.getItem('jwt');
+    if(!token) {
+      this.actions.logoutSuccess();
+    } else {
+      this.actions.logoutFail();
+    }
   }
 
   autoLogin() {

@@ -26,10 +26,11 @@ class AuthStore {
   onLogoutSuccess() {
     this._user = null;
     this._jwt = null;
+    window.location.assign("/");
   }
 
   onLoginUserFail(data) {
-    console.log("FAILL");
+    console.log(data);
   }
 
   getUser() {

@@ -15,6 +15,8 @@ var routes = require('./app/routes');
 var expressJwt = require('express-jwt');
 var jwt = require('jsonwebtoken');
 
+var models = require("./server/models");
+
 var app = express();
 
 //Secret TOKEN!!!!
@@ -28,7 +30,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //app.use('/api', expressJwt({secret: secret}));
 
-require('./server/routes')(app);
+require('./server/routes/users')(app);
 
 app.use(function(req, res) {
   Router.match({ routes: routes.default, location: req.url }, function(err, redirectLocation, renderProps) {
@@ -47,7 +49,8 @@ app.use(function(req, res) {
 });
 
 var server = require('http').createServer(app);
-
-server.listen(app.get('port'), function() {
-  console.log('Express server listening on port ' + app.get('port'));
+models.sequelize.sync().then(function () {
+  server.listen(app.get('port'), function() {
+    console.log('Express server listening on port ' + app.get('port'));
+  });
 });
