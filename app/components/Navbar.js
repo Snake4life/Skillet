@@ -52,23 +52,19 @@ class Navbar extends React.Component {
     }
   }
 
-  transitionToUpload() {
-    window.location.assign("/upload");
-  }
-
   render() {
     if(AuthStore.state._user) {
       var loginList = (
         <ul className='nav navbar-nav'>
-          <li><button className='btn btn-default navbar-btn' key='upload' onClick={this.transitionToUpload.bind(this)}>Upload</button></li>
-          <li><Link to='logout'>Log Out</Link></li>
+          <li><Link to='/upload'>Upload</Link></li>
+          <li><Link to='/logout'>Log Out</Link></li>
         </ul>
       );
 
     } else if(!AuthStore.state._user){
       var loginList = (
         <ul className='nav navbar-nav'>
-          <li><button className='btn btn-default navbar-btn'>Upload</button></li>
+          <li><Link to='/signup'>Upload</Link></li>
           <li><Link to='/login'>Log In</Link></li>
         <li><Link to='/signup'>Sign Up</Link></li>
         </ul>

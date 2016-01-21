@@ -20,12 +20,12 @@ module.exports = function(sequelize, DataTypes) {
 		},
 		fullName: DataTypes.STRING,
 		password: {type: DataTypes.STRING, allowNull: false}
-	}, {/*
+	}, {
 		classMethods: {
 			associate: function(models) {
 				User.hasMany(models.Video);
 			}
-		} */
+		} 
 	});
 	return User;
 };

@@ -14,6 +14,7 @@ class SignupStore {
 
   onUpdateEmail(event) {
     this.email = event.target.value;
+
     }
 
   onUpdateUsername(event) {
