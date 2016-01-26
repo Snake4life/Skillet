@@ -305,9 +305,49 @@ var UploadActions = (function () {
   }
 
   _createClass(UploadActions, [{
-    key: 'uploadVideo',
-    value: function uploadVideo(data) {
-      this.actions.uploadVideoSuccess(data);
+    key: 'uploadVideoS3',
+    value: function uploadVideoS3(file) {
+      console.log(file.name);
+      $.ajax({
+        url: '/api/S3',
+        type: 'GET',
+        data: { name: file.name, size: file.size, type: file.type }
+      }).done(function (data) {
+        console.log('here we go');
+        console.log(file);
+        console.log(data.signed_request);
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", data.signed_request);
+        xhr.setRequestHeader('x-amz-acl', 'public-read');
+        xhr.onload = function () {
+          if (xhr.status === 200) {
+            console.log('sweet');
+          }
+        };
+        xhr.onerror = function () {
+          alert("Could not upload file.");
+        };
+        xhr.send(file);
+      }); /*
+          $.ajax({
+           url: data.signedrequest,
+           method: 'PUT',
+           data: file,
+           cache: false,
+           processData: false, // Don't process the files
+           contentType: false, // Set content type to false as jQuery will tell the server its a query string request
+          }).done((data) => {
+           this.actions.uploadVideoSuccess(data);
+          }).fail(() => {
+             this.actions.uploadVideoFail();
+           });
+          });
+          */
+    }
+  }, {
+    key: 'uploadVideoData',
+    value: function uploadVideoData(data) {
+      //UPLOAD VIDEO META DATA TO POSTGRES
     }
   }]);
 
@@ -1340,24 +1380,26 @@ var Upload = (function (_React$Component) {
     value: function onChange(state) {
       this.setState(state);
     }
-    /*
-      handleSubmit(e) {
-        e.preventDefault();
-        console.log('Selected file:');
-      }
-    
-      handleFile(e) {
-        console.log('Selected file:', e.target.files[0]);
-    }
-    */
-
   }, {
     key: 'onDrop',
     value: function onDrop(e) {
       e.preventDefault();
-      console.log('HELLOO');
-      console.log(e.target.files[0]);
-      _UploadActions2.default.uploadVideo(e.target.files[0]);
+
+      this.state.processing = true;
+      var reader = new FileReader();
+      var file = e.target.files[0];
+      console.log(file.name);
+      _UploadActions2.default.uploadVideoS3(file);
+      /*
+          reader.readAsDataURL(file);
+          reader.onload = function(upload) {
+              this.setState({
+                  data_uri: upload.target.result
+              });
+              formData.append('files', this.state.data_uri);
+              UploadActions.uploadVideoS3(file);
+          }.bind(this);
+      */
     }
   }, {
     key: 'render',
@@ -1417,7 +1459,7 @@ var Upload = (function (_React$Component) {
           'span',
           { className: 'btn btn-default btn-file', style: stuff },
           'Select File to Upload',
-          _react2.default.createElement('input', { style: inputStyle, type: 'file', onChange: this.onDrop.bind(this) })
+          _react2.default.createElement('input', { style: inputStyle, ref: 'file', type: 'file', onChange: this.onDrop.bind(this) })
         );
       }
 
@@ -1433,13 +1475,13 @@ var Upload = (function (_React$Component) {
             'Upload'
           ),
           _react2.default.createElement(
-            'div',
-            { className: 'form-group' },
-            uploadElement
-          ),
-          _react2.default.createElement(
             'form',
-            null,
+            { ref: 'uploadForm', encType: 'multipart/form-data' },
+            _react2.default.createElement(
+              'div',
+              { className: 'form-group' },
+              uploadElement
+            ),
             _react2.default.createElement(
               'div',
               { className: 'form-group' },
@@ -2304,6 +2346,10 @@ var UploadStore = (function () {
     this.bones = "";
     this.file = null;
     this.uploadProgress = '25%';
+    this.processing = false;
+    this.data_uri = null;
+    this.fileName = null;
+    this.fileType = null;
   }
 
   _createClass(UploadStore, [{
@@ -2311,7 +2357,6 @@ var UploadStore = (function () {
     value: function onUploadVideoSuccess(data) {
       console.log('hello');
       this.file = data;
-      console.log(this.file);
     }
   }, {
     key: 'onUpdateTitle',
@@ -2323,6 +2368,11 @@ var UploadStore = (function () {
     key: 'onUpdateDescription',
     value: function onUpdateDescription(event) {
       this.vidDesc = event.target.value;
+    }
+  }, {
+    key: 'onUploadVideoFail',
+    value: function onUploadVideoFail() {
+      console.log('nah');
     }
   }]);
 

@@ -9,12 +9,15 @@ class UploadStore {
     this.bones = "";
     this.file = null;
     this.uploadProgress = '25%';
+    this.processing = false;
+    this.data_uri = null;
+    this.fileName = null;
+    this.fileType = null;
   }
 
   onUploadVideoSuccess(data) {
     console.log('hello');
     this.file = data;
-    console.log(this.file);
   }
   onUpdateTitle(event) {
     this.vidTitle = event.target.value;
@@ -23,6 +26,10 @@ class UploadStore {
 
   onUpdateDescription(event) {
     this.vidDesc = event.target.value;
+  }
+
+  onUploadVideoFail() {
+    console.log('nah');
   }
 }
 

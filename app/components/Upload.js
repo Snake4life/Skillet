@@ -21,22 +21,27 @@ class Upload extends React.Component {
   onChange(state) {
     this.setState(state);
   }
-/*
-  handleSubmit(e) {
-    e.preventDefault();
-    console.log('Selected file:');
-  }
-
-  handleFile(e) {
-    console.log('Selected file:', e.target.files[0]);
-}
-*/
 
   onDrop(e) {
     e.preventDefault();
-    console.log('HELLOO');
-    console.log(e.target.files[0]);
-    UploadActions.uploadVideo(e.target.files[0]);
+
+    this.state.processing = true;
+    const reader = new FileReader();
+    const file = e.target.files[0];
+    console.log(file.name);
+    UploadActions.uploadVideoS3(file);
+/*
+    reader.readAsDataURL(file);
+    reader.onload = function(upload) {
+        this.setState({
+            data_uri: upload.target.result
+        });
+        formData.append('files', this.state.data_uri);
+        UploadActions.uploadVideoS3(file);
+    }.bind(this);
+*/
+
+
   }
 
   render() {
@@ -83,7 +88,7 @@ class Upload extends React.Component {
       );
     } else {
       var uploadElement = (
-<span className="btn btn-default btn-file" style={stuff}>Select File to Upload<input style={inputStyle} type="file" onChange={this.onDrop.bind(this)}/></span>
+<span className="btn btn-default btn-file" style={stuff}>Select File to Upload<input style={inputStyle} ref="file" type="file" onChange={this.onDrop.bind(this)}/></span>
       );
     }
 
@@ -91,10 +96,10 @@ class Upload extends React.Component {
       <div className='container col-sm-8'>
         <div className='login jumbotron center-block'>
           <h1>Upload</h1>
-            <div className="form-group">
-              {uploadElement}
-                    </div>
-                    <form>
+                    <form ref="uploadForm" encType="multipart/form-data">
+                      <div className="form-group">
+                        {uploadElement}
+                              </div>
             <div className="form-group">
               <label htmlFor="username">Title</label>
               <input type="text" className="form-control" id="username" placeholder="Title" onChange={UploadActions.updateTitle} />
