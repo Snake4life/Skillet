@@ -315,7 +315,7 @@ var UploadActions = (function () {
       }).done(function (data) {
         console.log('here we go');
         console.log(file);
-        console.log(data.signed_request);
+        console.log(data.signedUrl);
         var xhr = new XMLHttpRequest();
         xhr.open("POST", data.signed_request);
         xhr.setRequestHeader('x-amz-acl', 'public-read');
@@ -1133,7 +1133,7 @@ var Navbar = (function (_React$Component) {
               _react2.default.createElement('div', { className: 'tri' }),
               _react2.default.createElement('div', { className: 'tri invert' })
             ),
-            'Skillet',
+            'Skillit.tv',
             _react2.default.createElement(
               'span',
               { className: 'badge badge-up badge-danger' },

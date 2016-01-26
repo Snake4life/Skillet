@@ -91,7 +91,7 @@ class Navbar extends React.Component {
               <div className='tri'></div>
               <div className='tri invert'></div>
             </span>
-            Skillet
+            Skillit.tv
             <span className='badge badge-up badge-danger'>{this.state.onlineUsers}</span>
           </Link>
         </div>

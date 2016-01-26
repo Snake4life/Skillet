@@ -44,6 +44,7 @@
     "react-videojs": "^0.0.2",
     "react-dropzone": "3.0.0",
     "react-dropzone-component": "0.8.1",
+    "react-s3-uploader": "2.0.0",
     "request": "^2.65.0",
     "serve-favicon": "^2.3.0",
     "sequelize": "3.17.3",

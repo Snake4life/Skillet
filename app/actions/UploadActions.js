@@ -19,7 +19,7 @@ class UploadActions {
         }).done((data) => {
           console.log('here we go')
           console.log(file);
-          console.log(data.signed_request);
+          console.log(data.signedUrl);
           var xhr = new XMLHttpRequest();
           xhr.open("POST", data.signed_request);
           xhr.setRequestHeader('x-amz-acl', 'public-read');

@@ -37,7 +37,7 @@ module.exports = function(app) {
         }
         else {
             var return_data = {
-                signed_request: data,
+                signedUrl: data,
                 url: 'https://s3.amazonaws.com/'+params.Bucket+'/'+req.query.name
             };
             console.log(JSON.stringify(return_data));
