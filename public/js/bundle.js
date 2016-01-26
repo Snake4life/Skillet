@@ -1046,7 +1046,7 @@ var Navbar = (function (_React$Component) {
       if (_AuthStore2.default.state._user) {
         var loginList = _react2.default.createElement(
           'ul',
-          { className: 'nav navbar-nav' },
+          { className: 'nav navbar-nav navbar-right' },
           _react2.default.createElement(
             'li',
             null,
@@ -1069,7 +1069,7 @@ var Navbar = (function (_React$Component) {
       } else if (!_AuthStore2.default.state._user) {
         var loginList = _react2.default.createElement(
           'ul',
-          { className: 'nav navbar-nav' },
+          { className: 'nav navbar-nav navbar-right' },
           _react2.default.createElement(
             'li',
             null,

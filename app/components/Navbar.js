@@ -55,7 +55,7 @@ class Navbar extends React.Component {
   render() {
     if(AuthStore.state._user) {
       var loginList = (
-        <ul className='nav navbar-nav'>
+        <ul className='nav navbar-nav navbar-right'>
           <li><Link to='/upload'>Upload</Link></li>
           <li><Link to='/logout'>Log Out</Link></li>
         </ul>
@@ -63,7 +63,7 @@ class Navbar extends React.Component {
 
     } else if(!AuthStore.state._user){
       var loginList = (
-        <ul className='nav navbar-nav'>
+        <ul className='nav navbar-nav navbar-right'>
           <li><Link to='/signup'>Upload</Link></li>
           <li><Link to='/login'>Log In</Link></li>
         <li><Link to='/signup'>Sign Up</Link></li>
