@@ -1,6 +1,6 @@
 {
   "development": {
-    "dialect": "postgres",
+    "dialect": "postgresql",
     "database": "database_dev",
     "storage": "localhost"
   },
@@ -9,7 +9,7 @@
     "password": "4k3IBKFge3tfE4QrD3YTl2cLR0",
     "database": "dgeoqsta4nrhm",
     "host": "ec2-54-225-195-249.compute-1.amazonaws.com",
-    "dialect": "postgres"
+    "dialect": "postgresql"
   },
   "production": {
     "username": "root",
