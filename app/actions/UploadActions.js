@@ -21,7 +21,7 @@ class UploadActions {
           console.log(file);
           console.log(data.signedUrl);
           var xhr = new XMLHttpRequest();
-          xhr.open("POST", data.signed_request);
+          xhr.open("POST", data.signedUrl);
           xhr.setRequestHeader('x-amz-acl', 'public-read');
           xhr.onload = function() {
           if (xhr.status === 200) {

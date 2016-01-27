@@ -19,7 +19,7 @@ var AuthActions = (function () {
   function AuthActions() {
     _classCallCheck(this, AuthActions);
 
-    this.generateActions('loginUserSuccess', 'loginUserFail', 'logoutUserSuccess', 'logoutUserFail', 'autoLoginSuccess', 'logoutSuccess', 'logoutFail', 'isLoggedIn', 'registerUserSuccess', 'registerUserFail');
+    this.generateActions('updatePasswordAttempt', 'getPassAttempt', 'updateEmailAttempt', 'getEmailAttempt', 'loginUserSuccess', 'loginUserFail', 'logoutUserSuccess', 'logoutUserFail', 'autoLoginSuccess', 'logoutSuccess', 'logoutFail', 'isLoggedIn', 'registerUserSuccess', 'registerUserFail');
   }
 
   _createClass(AuthActions, [{
@@ -38,7 +38,7 @@ var AuthActions = (function () {
         console.log(data);
         _this.actions.loginUserSuccess(data);
       }).fail(function (jqXhr) {
-        _this.actions.loginUserFail(jqXhr);
+        _this.actions.loginUserFail(payload);
       });
     }
   }, {
@@ -317,7 +317,7 @@ var UploadActions = (function () {
         console.log(file);
         console.log(data.signedUrl);
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", data.signed_request);
+        xhr.open("POST", data.signedUrl);
         xhr.setRequestHeader('x-amz-acl', 'public-read');
         xhr.onload = function () {
           if (xhr.status === 200) {
@@ -788,6 +788,10 @@ var _AuthActions = require('../actions/AuthActions');
 
 var _AuthActions2 = _interopRequireDefault(_AuthActions);
 
+var _AuthStore = require('../stores/AuthStore');
+
+var _AuthStore2 = _interopRequireDefault(_AuthStore);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -802,16 +806,23 @@ var Login = (function (_React$Component) {
   function Login(props, context) {
     _classCallCheck(this, Login);
 
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(Login).call(this, props, context));
+    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Login).call(this, props, context));
+
+    _this.state = _AuthStore2.default.getState();
+    _this.onChange = _this.onChange.bind(_this);
+    return _this;
   }
 
   _createClass(Login, [{
+    key: 'onChange',
+    value: function onChange(state) {
+      this.setState(state);
+    }
+  }, {
     key: 'handleSubmit',
     value: function handleSubmit(e) {
       e.preventDefault();
-      var email = 'aaa@gmail.com';
-      var password = 'aaa';
-      _AuthActions2.default.loginUser({ email: email, password: password });
+      _AuthActions2.default.loginUser({ email: _AuthStore2.default.state.emailAttempt, password: _AuthStore2.default.state.passwordAttempt, alert: this.refs.alert.getDOMNode() });
     }
   }, {
     key: 'render',
@@ -820,60 +831,59 @@ var Login = (function (_React$Component) {
         'div',
         { className: 'container' },
         _react2.default.createElement(
+          'h1',
+          { className: 'logo' },
+          _react2.default.createElement(
+            'a',
+            { href: 'https://www.heroku.com', title: 'Heroku' },
+            'Skillit.tv'
+          )
+        ),
+        _react2.default.createElement(
           'div',
-          { className: 'row flipInX animated' },
+          { className: 'content' },
           _react2.default.createElement(
             'div',
-            { className: 'col-sm-8' },
+            { className: 'panel', id: 'login' },
             _react2.default.createElement(
-              'div',
-              { className: 'panel panel-default' },
+              'h3',
+              null,
+              'Log in to your account'
+            ),
+            _react2.default.createElement(
+              'form',
+              { onSubmit: this.handleSubmit.bind(this), ref: 'loginForm', role: 'form' },
               _react2.default.createElement(
                 'div',
-                { className: 'panel-heading' },
-                'Login'
+                { className: 'alert alert-danger hidden', ref: 'alert' },
+                'There was a problem with your login.'
               ),
               _react2.default.createElement(
                 'div',
-                { className: 'panel-body' },
+                { className: 'form-group' },
                 _react2.default.createElement(
-                  'div',
-                  { className: 'login jumbotron center-block' },
-                  _react2.default.createElement(
-                    'h1',
-                    null,
-                    'Login'
-                  ),
-                  _react2.default.createElement(
-                    'form',
-                    { role: 'form', onSubmit: this.handleSubmit.bind(this) },
-                    _react2.default.createElement(
-                      'div',
-                      { className: 'form-group' },
-                      _react2.default.createElement(
-                        'label',
-                        { htmlFor: 'username' },
-                        'Username'
-                      ),
-                      _react2.default.createElement('input', { type: 'text', ref: 'username', className: 'form-control', placeholder: 'Username' })
-                    ),
-                    _react2.default.createElement(
-                      'div',
-                      { className: 'form-group' },
-                      _react2.default.createElement(
-                        'label',
-                        { htmlFor: 'password' },
-                        'Password'
-                      ),
-                      _react2.default.createElement('input', { type: 'password', ref: 'password', className: 'form-control', id: 'password', placeholder: 'Password' })
-                    ),
-                    _react2.default.createElement(
-                      'button',
-                      { type: 'submit', className: 'btn btn-default' },
-                      'Submit'
-                    )
-                  )
-                )
+                  'label',
+                  { 'for': 'email' },
+                  'Email address'
+                ),
+                _react2.default.createElement('div', { className: 'input-icon icon-username' }),
+                _react2.default.createElement('input', { className: 'form-control', id: 'email', name: 'email', placeholder: 'Email address', tabindex: '1', type: 'email', onChange: _AuthActions2.default.updateEmailAttempt })
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'form-group' },
+                _react2.default.createElement(
+                  'label',
+                  { 'for': 'password' },
+                  'Password'
+                ),
+                _react2.default.createElement('div', { className: 'input-icon icon-password' }),
+                _react2.default.createElement('input', { autocomplete: 'off', className: 'form-control password', id: 'password', name: 'password', placeholder: 'Password', tabindex: '2', type: 'password', onChange: _AuthActions2.default.updatePasswordAttempt })
+              ),
+              _react2.default.createElement(
+                'button',
+                { className: 'btn btn-primary btn-lg btn-block', tabindex: '3', type: 'submit' },
+                'Log In'
               )
             )
           )
@@ -893,7 +903,7 @@ Login.contextTypes = {
 
 exports.default = Login;
 
-},{"../actions/AuthActions":1,"react":"react","react-router":"react-router"}],13:[function(require,module,exports){
+},{"../actions/AuthActions":1,"../stores/AuthStore":22,"react":"react","react-router":"react-router"}],13:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1058,11 +1068,86 @@ var Navbar = (function (_React$Component) {
           ),
           _react2.default.createElement(
             'li',
-            null,
+            { className: 'dropdown' },
             _react2.default.createElement(
-              _reactRouter.Link,
-              { to: '/logout' },
-              'Log Out'
+              'a',
+              { href: '#', className: 'dropdown-toggle', 'data-toggle': 'dropdown' },
+              'Top 100 ',
+              _react2.default.createElement('span', { className: 'caret' })
+            ),
+            _react2.default.createElement(
+              'ul',
+              { className: 'dropdown-menu' },
+              _react2.default.createElement(
+                'li',
+                null,
+                _react2.default.createElement(
+                  _reactRouter.Link,
+                  { to: '/profile/:userID' },
+                  'Profile'
+                )
+              ),
+              _react2.default.createElement(
+                'li',
+                { className: 'dropdown-header' },
+                'View Profile'
+              ),
+              _react2.default.createElement('li', { role: 'separator', className: 'divider' }),
+              _react2.default.createElement(
+                'li',
+                null,
+                _react2.default.createElement(
+                  _reactRouter.Link,
+                  { to: '/profile/:userID/playlists' },
+                  'Videos'
+                )
+              ),
+              _react2.default.createElement(
+                'li',
+                null,
+                _react2.default.createElement(
+                  _reactRouter.Link,
+                  { to: '/profile/:userID/likes' },
+                  'Likes'
+                )
+              ),
+              _react2.default.createElement(
+                'li',
+                null,
+                _react2.default.createElement(
+                  _reactRouter.Link,
+                  { to: '/profile/:userID/playlist' },
+                  'Playlists'
+                )
+              ),
+              _react2.default.createElement('li', { role: 'separator', className: 'divider' }),
+              _react2.default.createElement(
+                'li',
+                null,
+                _react2.default.createElement(
+                  _reactRouter.Link,
+                  { to: '/accsettings' },
+                  'Account Settings'
+                )
+              ),
+              _react2.default.createElement(
+                'li',
+                null,
+                _react2.default.createElement(
+                  _reactRouter.Link,
+                  { to: '/help' },
+                  'Help'
+                )
+              ),
+              _react2.default.createElement(
+                'li',
+                null,
+                _react2.default.createElement(
+                  _reactRouter.Link,
+                  { to: '/logout' },
+                  'Log Off'
+                )
+              )
             )
           )
         );
@@ -1990,9 +2075,22 @@ var AuthStore = (function () {
     this.bindActions(_AuthActions2.default);
     this._user = null;
     this._jwt = null;
+    this.emailAttempt = '';
+    this.passwordAttempt = '';
+    this.failedAttempt = false;
   }
 
   _createClass(AuthStore, [{
+    key: 'onUpdateEmailAttempt',
+    value: function onUpdateEmailAttempt(event) {
+      this.emailAttempt = event.target.value;
+    }
+  }, {
+    key: 'onUpdatePasswordAttempt',
+    value: function onUpdatePasswordAttempt(event) {
+      this.passwordAttempt = event.target.value;
+    }
+  }, {
     key: 'onAutoLoginSuccess',
     value: function onAutoLoginSuccess(data) {
       this._jwt = data.token;
@@ -2016,8 +2114,10 @@ var AuthStore = (function () {
     }
   }, {
     key: 'onLoginUserFail',
-    value: function onLoginUserFail(data) {
-      console.log(data);
+    value: function onLoginUserFail(payload) {
+      this.failedAttempt = true;
+      console.log(this.failedAttempt);
+      payload.alert.classList.remove('hidden');
     }
   }, {
     key: 'getUser',

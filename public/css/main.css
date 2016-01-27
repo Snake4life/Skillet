@@ -9,6 +9,8 @@ html {
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
 }
+
+
 body {
   margin: 0;
 }
@@ -8105,4 +8107,225 @@ label {
   left: 20px;
   -webkit-animation-delay: -500ms;
           animation-delay: -500ms;
+}
+
+.panel {
+    max-width: 430px;
+    margin: 0 auto 20px;
+    border-radius: 8px;
+}
+
+.panel form {
+    padding: 40px;
+}
+
+@media(max-width:600px) {
+    .panel form {
+        padding: 40px 20px;
+    }
+}
+
+.panel h3 {
+    margin: 40px 0 0;
+}
+
+.panel h4 {
+    color: #333;
+    font-weight: 700;
+}
+
+.panel .divide {
+    position: relative;
+    margin-top: -20px;
+    margin-bottom: -20px;
+}
+
+.panel .divide span {
+    position: relative;
+    background: #fff;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.panel .divide::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 40px;
+    right: 40px;
+    height: 1px;
+    background: rgba(203,203,210,0.6);
+}
+
+.panel .panel-body {
+    padding: 20px 40px 40px;
+}
+
+.panel .panel-body.panel-left {
+    text-align: left;
+}
+
+.panel .panel-body:last-child {
+    padding: 26.66667px 40px;
+}
+
+.panel .panel-footer {
+    padding: 20px;
+    display: block;
+    font-size: 17px;
+    color: #878797;
+    font-weight: 100;
+}
+
+.panel .panel-footer .help-block {
+    margin-top: 0;
+    padding-bottom: 0;
+    font-size: 14px;
+}
+
+.panel .panel-footer form,.panel .panel-footer .btn-link {
+    padding: 0;
+}
+
+.panel .panel-footer .btn-link {
+    font-weight: 200;
+    vertical-align: baseline;
+}
+
+.panel .help-block {
+    margin-top: -10px;
+    padding-bottom: 20px;
+}
+
+.panel a.panel-footer {
+    text-decoration: none;
+}
+
+.panel a.panel-footer>span {
+    color: #79589f;
+    text-decoration: underline;
+}
+
+form label {
+    text-align: left;
+    position: absolute;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    width: 1px;
+    margin: -1px;
+    padding: 0;
+    border: 0;
+}
+
+.ie form label {
+    display: block;
+    position: relative;
+    clip: none;
+    height: auto;
+    width: auto;
+    margin: 5px 0;
+}
+
+form .form-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+form input[type="text"],form input[type="email"],form input[type="password"],form input[type="number"],.btn{
+    height: 44px;
+}
+
+@media(max-width:600px) {
+    form input[type="text"],form input[type="email"],form input[type="password"],form input[type="number"] {
+        font-size: 16px;
+    }
+}
+
+form .input-icon {
+    position: absolute;
+    top: 50%;
+    margin-top: -9px;
+    left: 12px;
+    width: 18px;
+    height: 18px;
+}
+
+form .input-icon::after {
+    content: '';
+    position: absolute;
+    right: -11px;
+    top: -10px;
+    bottom: -10px;
+    width: 1px;
+    opacity: .5;
+    background-color: rgba(212,212,212,0);
+    background-image: -webkit-linear-gradient(bottom,rgba(212,212,212,0) 0,#d4d4d4 30%,#d4d4d4 70%,rgba(212,212,212,0) 100%);
+    background-image: linear-gradient(to top,rgba(212,212,212,0) 0,#d4d4d4 30%,#d4d4d4 70%,rgba(212,212,212,0) 100%);
+}
+
+form .input-icon.icon-username {
+    background: url(../icon-username.png);
+    background-repeat: repeat;
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio:1.3),only screen and (min--moz-device-pixel-ratio:1.3),only screen and (-o-min-device-pixel-ratio:1.3 / 1),only screen and (min-resolution:125dpi),only screen and (min-resolution:1.3dppx) {
+    form .input-icon.icon-username {
+        background: url(../icon-username@2x.png);
+        background-size: 18px auto;
+    }
+}
+
+form .input-icon.icon-password {
+    background: url(../icon-password.png);
+    background-repeat: repeat;
+}
+p,h2,h3 {
+    orphans: 3;
+    widows: 3;
+}
+
+h2,h3 {
+    page-break-after: avoid;
+    text-align: center;
+}
+form h3 {
+  align: center;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    display: none;
+    float: left;
+    min-width: 160px;
+    padding: 5px 0;
+    margin: 2px 0 0;
+    list-style: none;
+    font-size: 14px;
+    text-align: left;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border: 1px solid rgba(0,0,0,0.15);
+    border-radius: 4px;
+    -webkit-box-shadow: 0 6px 12px rgba(0,0,0,0.175);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.175);
+    background-clip: padding-box;
+}
+
+.dropdown {
+    position: relative;
+}
+
+.dropdown-toggle:focus {
+    outline: 0;
+}
+
+.navbar-right {
+  margin-top: 4px;
+}
+.navbar-header {
+  margin-top: 4px;
 }

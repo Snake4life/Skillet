@@ -1,6 +1,6 @@
 {
   "development": {
-    "dialect": "postgresql",
+    "dialect": "postgres",
     "database": "database_dev",
     "storage": "localhost"
   },

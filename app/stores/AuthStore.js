@@ -8,6 +8,17 @@ class AuthStore {
     this.bindActions(AuthActions);
     this._user = null;
     this._jwt = null;
+    this.emailAttempt = '';
+    this.passwordAttempt = '';
+    this.failedAttempt = false;
+  }
+
+  onUpdateEmailAttempt(event) {
+    this.emailAttempt = event.target.value;
+  }
+
+  onUpdatePasswordAttempt(event) {
+    this.passwordAttempt = event.target.value;
   }
 
   onAutoLoginSuccess(data) {
@@ -29,8 +40,10 @@ class AuthStore {
     window.location.assign("/");
   }
 
-  onLoginUserFail(data) {
-    console.log(data);
+  onLoginUserFail(payload) {
+    this.failedAttempt = true;
+    console.log(this.failedAttempt);
+    payload.alert.classList.remove('hidden');
   }
 
   getUser() {

@@ -57,8 +57,22 @@ class Navbar extends React.Component {
       var loginList = (
         <ul className='nav navbar-nav navbar-right'>
           <li><Link to='/upload'>Upload</Link></li>
-          <li><Link to='/logout'>Log Out</Link></li>
-        </ul>
+            <li className='dropdown'>
+              <a href='#' className='dropdown-toggle' data-toggle='dropdown'>Top 100 <span className='caret'></span></a>
+              <ul className='dropdown-menu'>
+                <li><Link to='/profile/:userID'>Profile</Link></li>
+                <li className="dropdown-header">View Profile</li>
+                <li role="separator" className="divider"></li>
+                <li><Link to='/profile/:userID/playlists'>Videos</Link></li>
+                <li><Link to='/profile/:userID/likes'>Likes</Link></li>
+                <li><Link to='/profile/:userID/playlist'>Playlists</Link></li>
+                <li role="separator" className="divider"></li>
+                <li><Link to='/accsettings'>Account Settings</Link></li>
+                <li><Link to='/help'>Help</Link></li>
+                <li><Link to='/logout'>Log Off</Link></li>
+              </ul>
+            </li>
+          </ul>
       );
 
     } else if(!AuthStore.state._user){

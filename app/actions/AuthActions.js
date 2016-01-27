@@ -3,6 +3,10 @@ import alt from '../alt';
 class AuthActions {
   constructor() {
     this.generateActions(
+      'updatePasswordAttempt',
+      'getPassAttempt',
+      'updateEmailAttempt',
+      'getEmailAttempt',
       'loginUserSuccess',
       'loginUserFail',
       'logoutUserSuccess',
@@ -15,6 +19,7 @@ class AuthActions {
       'registerUserFail'
     );
   }
+
 
   loginUser(payload) {
       $.ajax({
@@ -30,7 +35,7 @@ class AuthActions {
         this.actions.loginUserSuccess(data)
       })
       .fail((jqXhr) => {
-        this.actions.loginUserFail(jqXhr)
+        this.actions.loginUserFail(payload)
       });
     }
 
