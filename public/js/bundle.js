@@ -1338,64 +1338,119 @@ var Signup = (function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
+      var fix = {
+        marginTop: '2rem',
+        marginBottom: '2.6rem'
+      };
       return _react2.default.createElement(
         'div',
-        { className: 'container col-sm-8' },
+        { className: 'container' },
         _react2.default.createElement(
-          'div',
-          { className: 'login jumbotron center-block' },
+          'header',
+          null,
+          _react2.default.createElement('a', { className: 'logo', href: 'https://www.heroku.com/home' }),
           _react2.default.createElement(
             'h1',
-            null,
-            'Signup'
+            { className: 'h2' },
+            'Sign up and experience Skillit.tv today'
+          ),
+          _react2.default.createElement('hr', null)
+        ),
+        _react2.default.createElement('p', { className: 'alert error hidden', id: 'fill-all-fields' }),
+        _react2.default.createElement(
+          'div',
+          { className: 'row' },
+          _react2.default.createElement(
+            'div',
+            { className: 'benefits col-md-6' },
+            _react2.default.createElement(
+              'h2',
+              { className: 'h3' },
+              'Content'
+            ),
+            _react2.default.createElement(
+              'p',
+              null,
+              'Enjoy the best educational videos and learn something new, or create your own and share your skills with the world.'
+            ),
+            _react2.default.createElement(
+              'h2',
+              { className: 'h3' },
+              'Community'
+            ),
+            _react2.default.createElement(
+              'p',
+              null,
+              'A thriving community and supportive community to help your learning process be as easy as possible'
+            ),
+            _react2.default.createElement(
+              'h2',
+              { className: 'h3' },
+              'Compensation'
+            ),
+            _react2.default.createElement(
+              'p',
+              null,
+              'As a content creator, see direct rewards for your contribution with our industry leading compensation plan.'
+            )
           ),
           _react2.default.createElement(
-            'form',
-            { ref: 'signupForm', role: 'form', onSubmit: this.handleSubmit.bind(this) },
+            'div',
+            { className: 'signup col-md-6' },
             _react2.default.createElement(
-              'div',
-              { className: 'form-group' },
+              'form',
+              { ref: 'signupForm', role: 'form', onSubmit: this.handleSubmit.bind(this) },
               _react2.default.createElement(
-                'label',
-                { htmlFor: 'username' },
-                'Email'
+                'div',
+                { className: 'form-group', style: fix },
+                _react2.default.createElement(
+                  'label',
+                  { htmlFor: 'username' },
+                  'Email'
+                ),
+                _react2.default.createElement('input', { type: 'email', className: 'form-control input-lg', id: 'username', placeholder: 'Email', onChange: _SignupActions2.default.updateEmail })
               ),
-              _react2.default.createElement('input', { type: 'email', className: 'form-control', id: 'username', placeholder: 'Email', onChange: _SignupActions2.default.updateEmail })
+              _react2.default.createElement(
+                'div',
+                { className: 'form-group' },
+                _react2.default.createElement(
+                  'label',
+                  { htmlFor: 'username' },
+                  'Username'
+                ),
+                _react2.default.createElement('input', { type: 'text', className: 'form-control input-lg', id: 'username', placeholder: 'Display Name', onChange: _SignupActions2.default.updateUsername })
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'form-group' },
+                _react2.default.createElement(
+                  'label',
+                  { htmlFor: 'username' },
+                  'Full Name'
+                ),
+                _react2.default.createElement('input', { type: 'text', className: 'form-control input-lg', id: 'username', placeholder: 'Full Name', onChange: _SignupActions2.default.updateFullName })
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'form-group' },
+                _react2.default.createElement(
+                  'label',
+                  { htmlFor: 'password' },
+                  'Password'
+                ),
+                _react2.default.createElement('input', { type: 'password', className: 'form-control input-lg', id: 'password', ref: 'password', placeholder: 'Password', onChange: _SignupActions2.default.updatePassword })
+              ),
+              _react2.default.createElement('input', { className: 'form-control btn btn-default input-lg', tabindex: '5', type: 'submit', value: 'Create Account' })
             ),
             _react2.default.createElement(
-              'div',
-              { className: 'form-group' },
+              'h5',
+              { className: 'login' },
+              'Already have an account?  ',
               _react2.default.createElement(
-                'label',
-                { htmlFor: 'username' },
-                'Username'
-              ),
-              _react2.default.createElement('input', { type: 'text', className: 'form-control', id: 'username', placeholder: 'Display Name', onChange: _SignupActions2.default.updateUsername })
-            ),
-            _react2.default.createElement(
-              'div',
-              { className: 'form-group' },
-              _react2.default.createElement(
-                'label',
-                { htmlFor: 'username' },
-                'Full Name'
-              ),
-              _react2.default.createElement('input', { type: 'text', className: 'form-control', id: 'username', placeholder: 'Full Name', onChange: _SignupActions2.default.updateFullName })
-            ),
-            _react2.default.createElement(
-              'div',
-              { className: 'form-group' },
-              _react2.default.createElement(
-                'label',
-                { htmlFor: 'password' },
-                'Password'
-              ),
-              _react2.default.createElement('input', { type: 'password', className: 'form-control', id: 'password', ref: 'password', placeholder: 'Password', onChange: _SignupActions2.default.updatePassword })
-            ),
-            _react2.default.createElement(
-              'button',
-              { type: 'submit', className: 'btn btn-default' },
-              'Submit'
+                'a',
+                { href: 'https://id.heroku.com/login' },
+                'Log In'
+              )
             )
           )
         )
