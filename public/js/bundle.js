@@ -1072,7 +1072,7 @@ var Navbar = (function (_React$Component) {
             _react2.default.createElement(
               'a',
               { href: '#', className: 'dropdown-toggle', 'data-toggle': 'dropdown' },
-              'Top 100 ',
+              'Profile',
               _react2.default.createElement('span', { className: 'caret' })
             ),
             _react2.default.createElement(

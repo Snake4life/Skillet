@@ -58,7 +58,7 @@ class Navbar extends React.Component {
         <ul className='nav navbar-nav navbar-right'>
           <li><Link to='/upload'>Upload</Link></li>
             <li className='dropdown'>
-              <a href='#' className='dropdown-toggle' data-toggle='dropdown'>Top 100 <span className='caret'></span></a>
+              <a href='#' className='dropdown-toggle' data-toggle='dropdown'>Profile<span className='caret'></span></a>
               <ul className='dropdown-menu'>
                 <li><Link to='/profile/:userID'>Profile</Link></li>
                 <li className="dropdown-header">View Profile</li>
