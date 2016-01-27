@@ -10,9 +10,9 @@ var client = knox.createClient({
 */
 
 
-var AWS_ACCESS_KEY = 'AKIAJUH23F4THC33MBGA';
-var AWS_SECRET_KEY = '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';
-var S3_BUCKET = 'testskillittv';
+var AWS_ACCESS_KEY = process.env.AWS_ACCESS_KEY_ID;
+var AWS_SECRET_KEY = process.env.AWS_SECRET_ACCESS_KEY;
+var S3_BUCKET = process.env.S3_BUCKET_NAME;
 
 AWS.config.update({accessKeyId: AWS_ACCESS_KEY, secretAccessKey: AWS_SECRET_KEY});
 AWS.config.region = 'us-east-1';
