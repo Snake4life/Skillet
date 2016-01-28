@@ -8324,14 +8324,20 @@ form h3 {
 .dropdown {
     position: relative;
 }
+.navbar-nav {
+}
 
+.navbar-header {
+  padding-top: 5px;
+}
 .dropdown-toggle:focus {
     outline: 0;
 }
+.navbar-form {
+  padding-top: 0px;
+}
 
 .navbar-right {
-  margin-top: 4px;
-}
-.navbar-header {
-  margin-top: 4px;
+  margin-right: 0px;
+  padding-top: 5px;
 }

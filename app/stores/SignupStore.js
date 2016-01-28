@@ -9,7 +9,6 @@ class SignupStore {
     this.username = "";
     this.fullName = "";
     this.password = "";
-
   }
 
   onUpdateEmail(event) {
@@ -36,9 +35,9 @@ class SignupStore {
     window.location.assign("/");
   }
 
-  onSignupUserFail(data){
-    console.log('FAil');
-  console.log(data);
+  onSignupUserFail(payload){
+    console.log(this.failedAttempt);
+    payload.alert.classList.remove('hidden');
   }
 
 }

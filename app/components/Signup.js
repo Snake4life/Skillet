@@ -28,7 +28,8 @@ class Signup extends React.Component {
       email: this.state.email,
       username: this.state.username,
       fullName: this.state.fullName,
-      password: this.state.password
+      password: this.state.password,
+      alert: this.refs.alert.getDOMNode()
     });
 
   }
@@ -57,6 +58,7 @@ class Signup extends React.Component {
     </div>
     <div className="signup col-md-6">
       <form ref="signupForm" role="form" onSubmit={this.handleSubmit.bind(this)}>
+        <div className="alert alert-danger hidden" ref="alert">That email is taken</div>
       <div className="form-group" style={fix}>
         <label htmlFor="username">Email</label>
         <input type="email" className="form-control input-lg" id="username" placeholder="Email" onChange={SignupActions.updateEmail} />

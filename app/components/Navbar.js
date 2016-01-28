@@ -4,6 +4,7 @@ import NavbarStore from '../stores/NavbarStore';
 import NavbarActions from '../actions/NavbarActions';
 import AuthStore from '../stores/AuthStore';
 import AuthActions from '../actions/AuthActions';
+import {NavDropdown, MenuItem} from 'react-bootstrap';
 
 class Navbar extends React.Component {
   constructor(props) {
@@ -38,6 +39,11 @@ class Navbar extends React.Component {
     this.setState(state);
   }
 
+  userNameClick(event) {
+    event.preventDefault();
+    console.log('XXXXX');
+  }
+
   handleSubmit(event) {
     event.preventDefault();
 
@@ -53,36 +59,47 @@ class Navbar extends React.Component {
   }
 
   render() {
+    var padStyle = {
+      paddingTop: '3px',
+      paddingBottom: '5px'
+    };
+    var yourimg = (
+      <img src="../img/profileImage.png" height="27" width="27"></img>
+    );
     if(AuthStore.state._user) {
       var loginList = (
         <ul className='nav navbar-nav navbar-right'>
-          <li><Link to='/upload'>Upload</Link></li>
-            <li className='dropdown'>
-              <a href='#' className='dropdown-toggle' data-toggle='dropdown'>Profile<span className='caret'></span></a>
-              <ul className='dropdown-menu'>
-                <li><Link to='/profile/:userID'>Profile</Link></li>
-                <li className="dropdown-header">View Profile</li>
-                <li role="separator" className="divider"></li>
-                <li><Link to='/profile/:userID/playlists'>Videos</Link></li>
-                <li><Link to='/profile/:userID/likes'>Likes</Link></li>
-                <li><Link to='/profile/:userID/playlist'>Playlists</Link></li>
-                <li role="separator" className="divider"></li>
-                <li><Link to='/accsettings'>Account Settings</Link></li>
-                <li><Link to='/help'>Help</Link></li>
-                <li><Link to='/logout'>Log Off</Link></li>
-              </ul>
+          <li>
+          <Link to='/upload' style={padStyle}>  <button className="btn btn-default nav-btn">
+            Upload
+            </button></Link>
             </li>
+        <NavDropdown eventKey={3} title={yourimg} id="basic-nav-dropdown" onClick={this.userNameClick}>
+          <MenuItem eventKey="1">View Profile</MenuItem>
+          <MenuItem eventKey="2">Likes</MenuItem>
+          <MenuItem eventKey="3">Playlists</MenuItem>
+          <MenuItem divider />
+          <MenuItem eventKey="4">Help</MenuItem>
+          <MenuItem eventKey="5"><Link to="/logout">Logout</Link></MenuItem>
+        </NavDropdown>
           </ul>
       );
 
     } else if(!AuthStore.state._user){
+
       var loginList = (
-        <ul className='nav navbar-nav navbar-right'>
-          <li><Link to='/signup'>Upload</Link></li>
+                <ul className='nav navbar-nav navbar-right'>
+          <li>
+          <Link to='/signup' style={padStyle}>  <button className="btn btn-default nav-btn">
+            Upload
+            </button></Link>
+            </li>
           <li><Link to='/login'>Log In</Link></li>
         <li><Link to='/signup'>Sign Up</Link></li>
-        </ul>
-    );
+
+      </ul>
+  );
+
     }
     return (
       <nav className='navbar navbar-default navbar-static-top'>
@@ -118,9 +135,7 @@ class Navbar extends React.Component {
               </span>
             </div>
           </form>
-
             {loginList}
-
         </div>
       </nav>
     );

@@ -37,7 +37,8 @@ module.exports = function(app) {
   	var passhash = bcrypt.hashSync(req.body.password, salt);
     models.User.findOrCreate({
   		where: {
-  			email: req.body.email
+  			email: req.body.email,
+        name: req.body.username
   		},
   		defaults: {
   			uuid: uid,
@@ -45,16 +46,15 @@ module.exports = function(app) {
   			fullName: req.body.fullName,
   			password: passhash,
   		}
-  	}).then(function(result) {
-  		var user = result[0],
-  		created = result[1];
-      console.log(created);
-      console.log(user);
-/*  		if(created) {
-        console.log('hello');
-  			res.status(500).send({ error: 'User with Email already exists'})
-  		}*/
-  		res.send(user);
-  	});
+    }).spread(function(user, created) {
+        console.log(user.get({
+          plain: true
+        }));
+        console.log(created)
+        if(!created) {
+          res.status(500).send({error: 'Username or Email already Taken'});
+        }
+        res.send(user);
+      });
   });
 }
