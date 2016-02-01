@@ -827,12 +827,15 @@ var Login = (function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
+      var centerTitle = {
+        textAlign: 'center'
+      };
       return _react2.default.createElement(
         'div',
         { className: 'container' },
         _react2.default.createElement(
           'h1',
-          { className: 'logo' },
+          { className: 'logo', style: centerTitle },
           _react2.default.createElement(
             'a',
             { href: 'https://www.heroku.com', title: 'Heroku' },
@@ -1317,6 +1320,9 @@ var Signup = (function (_React$Component) {
         marginTop: '2rem',
         marginBottom: '2.6rem'
       };
+      var centerTitle = {
+        textAlign: 'center'
+      };
       return _react2.default.createElement(
         'div',
         { className: 'container' },
@@ -1326,7 +1332,7 @@ var Signup = (function (_React$Component) {
           _react2.default.createElement('a', { className: 'logo', href: 'https://www.heroku.com/home' }),
           _react2.default.createElement(
             'h1',
-            { className: 'h2' },
+            { className: 'h2', style: centerTitle },
             'Sign up and experience Skillit.tv today'
           ),
           _react2.default.createElement('hr', null)
@@ -1346,7 +1352,7 @@ var Signup = (function (_React$Component) {
             _react2.default.createElement(
               'p',
               null,
-              'Enjoy the best educational videos and learn something new, or create your own and share your skills with the world.'
+              'Learn something new while enjoying the best educational videos the internet has to offer, or create your own and share your skills with the world.'
             ),
             _react2.default.createElement(
               'h2',
@@ -1356,7 +1362,7 @@ var Signup = (function (_React$Component) {
             _react2.default.createElement(
               'p',
               null,
-              'A thriving community and supportive community to help your learning process be as easy as possible'
+              'A thriving and supportive community to help your learning process be as easy as possible'
             ),
             _react2.default.createElement(
               'h2',
@@ -1585,47 +1591,51 @@ var Upload = (function (_React$Component) {
 
       return _react2.default.createElement(
         'div',
-        { className: 'container col-sm-8' },
+        { className: 'container' },
+        _react2.default.createElement(
+          'h3',
+          null,
+          'Upload'
+        ),
         _react2.default.createElement(
           'div',
-          { className: 'login jumbotron center-block' },
+          { className: 'content' },
           _react2.default.createElement(
-            'h1',
-            null,
-            'Upload'
-          ),
-          _react2.default.createElement(
-            'form',
-            { ref: 'uploadForm', encType: 'multipart/form-data' },
+            'div',
+            { className: 'panel', id: 'upload' },
             _react2.default.createElement(
-              'div',
-              { className: 'form-group' },
-              uploadElement
-            ),
-            _react2.default.createElement(
-              'div',
-              { className: 'form-group' },
+              'form',
+              { ref: 'upload' },
               _react2.default.createElement(
-                'label',
-                { htmlFor: 'username' },
-                'Title'
+                'div',
+                { className: 'form-group' },
+                uploadElement
               ),
-              _react2.default.createElement('input', { type: 'text', className: 'form-control', id: 'username', placeholder: 'Title', onChange: _UploadActions2.default.updateTitle })
-            ),
-            _react2.default.createElement(
-              'div',
-              { className: 'form-group' },
               _react2.default.createElement(
-                'label',
-                { htmlFor: 'username' },
-                'Description'
+                'div',
+                { className: 'form-group' },
+                _react2.default.createElement(
+                  'label',
+                  { htmlFor: 'username' },
+                  'Title'
+                ),
+                _react2.default.createElement('input', { type: 'text', className: 'form-control', id: 'username', placeholder: 'Title', onChange: _UploadActions2.default.updateTitle })
               ),
-              _react2.default.createElement('textarea', { type: 'text', rows: '4', className: 'form-control', id: 'username', placeholder: 'Description', onChange: _UploadActions2.default.updateDescription })
-            ),
-            _react2.default.createElement(
-              'button',
-              { className: 'btn btn-default' },
-              'Upload'
+              _react2.default.createElement(
+                'div',
+                { className: 'form-group' },
+                _react2.default.createElement(
+                  'label',
+                  { htmlFor: 'username' },
+                  'Description'
+                ),
+                _react2.default.createElement('textarea', { type: 'text', rows: '4', className: 'form-control', id: 'username', placeholder: 'Description', onChange: _UploadActions2.default.updateDescription })
+              ),
+              _react2.default.createElement(
+                'button',
+                { className: 'btn btn-default' },
+                'Upload'
+              )
             )
           )
         )

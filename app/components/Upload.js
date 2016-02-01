@@ -93,27 +93,28 @@ class Upload extends React.Component {
     }
 
     return(
-      <div className='container col-sm-8'>
-        <div className='login jumbotron center-block'>
-          <h1>Upload</h1>
-                    <form ref="uploadForm" encType="multipart/form-data">
-                      <div className="form-group">
-                        {uploadElement}
-                              </div>
-            <div className="form-group">
-              <label htmlFor="username">Title</label>
-              <input type="text" className="form-control" id="username" placeholder="Title" onChange={UploadActions.updateTitle} />
-            </div>
-            <div className="form-group">
-              <label htmlFor="username">Description</label>
-              <textarea type="text" rows="4" className="form-control" id="username" placeholder="Description" onChange={UploadActions.updateDescription}></textarea>
-            </div>
-            <button className='btn btn-default'>Upload</button>
-</form>
 
-  </div>
-</div>
-
+      <div className="container">
+                    <h3>Upload</h3>
+        <div className="content">
+          <div className="panel" id="upload">
+            <form ref="upload">
+              <div className="form-group">
+                {uploadElement}
+              </div>
+              <div className="form-group">
+                <label htmlFor="username">Title</label>
+                <input type="text" className="form-control" id="username" placeholder="Title" onChange={UploadActions.updateTitle} />
+              </div>
+              <div className="form-group">
+                <label htmlFor="username">Description</label>
+                <textarea type="text" rows="4" className="form-control" id="username" placeholder="Description" onChange={UploadActions.updateDescription}></textarea>
+              </div>
+              <button className='btn btn-default'>Upload</button>
+            </form>
+          </div>
+        </div>
+      </div>
     );
   }
 }

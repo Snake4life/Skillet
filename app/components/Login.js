@@ -19,9 +19,12 @@ class Login extends React.Component {
     AuthActions.loginUser({email: AuthStore.state.emailAttempt, password: AuthStore.state.passwordAttempt, alert: this.refs.alert.getDOMNode()});
   }
   render() {
+    var centerTitle = {
+      textAlign: 'center'
+    };
     return(
       <div className="container">
-          <h1 className="logo"><a href="https://www.heroku.com" title="Heroku">Skillit.tv</a></h1>
+          <h1 className="logo" style={centerTitle}><a href="https://www.heroku.com" title="Heroku">Skillit.tv</a></h1>
           <div className="content">
               <div className="panel" id="login">
                   <h3>Log in to your account</h3>

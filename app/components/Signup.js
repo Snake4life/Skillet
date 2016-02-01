@@ -39,20 +39,23 @@ class Signup extends React.Component {
       marginTop: '2rem',
       marginBottom: '2.6rem'
     };
+    var centerTitle = {
+      textAlign: 'center'
+    };
     return(
 
 <div className="container">
   <header>
     <a className="logo" href="https://www.heroku.com/home"></a>
-    <h1 className="h2">Sign up and experience Skillit.tv today</h1>
+    <h1 className="h2" style={centerTitle}>Sign up and experience Skillit.tv today</h1>
     <hr />
   </header><p className="alert error hidden" id="fill-all-fields"></p>
   <div className="row">
     <div className="benefits col-md-6">
       <h2 className="h3">Content</h2>
-      <p>Enjoy the best educational videos and learn something new, or create your own and share your skills with the world.</p>
+      <p>Learn something new while enjoying the best educational videos the internet has to offer, or create your own and share your skills with the world.</p>
       <h2 className="h3">Community</h2>
-      <p>A thriving community and supportive community to help your learning process be as easy as possible</p>
+      <p>A thriving and supportive community to help your learning process be as easy as possible</p>
       <h2 className="h3">Compensation</h2>
       <p>As a content creator, see direct rewards for your contribution with our industry leading compensation plan.</p>
     </div>
