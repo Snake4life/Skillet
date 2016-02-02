@@ -8,6 +8,7 @@ class AuthStore {
     this.bindActions(AuthActions);
     this._user = null;
     this._jwt = null;
+    this.userUUID = null;
     this.emailAttempt = '';
     this.passwordAttempt = '';
     this.failedAttempt = false;
@@ -24,12 +25,13 @@ class AuthStore {
   onAutoLoginSuccess(data) {
     this._jwt = data.token;
     this._user = jwt_decode(data.token);
+    this.userUUID = this._user.uuid
   }
 
   onLoginUserSuccess(data) {
     this._jwt = data.token;
     this._user = jwt_decode(data.token);
-    console.log(this._user);
+    this.userUUID = this._user.uuid
     localStorage.setItem('jwt', this._jwt);
         window.location.assign("/");
   }

@@ -293,6 +293,10 @@ var _alt = require('../alt');
 
 var _alt2 = _interopRequireDefault(_alt);
 
+var _AuthStore = require('../stores/AuthStore');
+
+var _AuthStore2 = _interopRequireDefault(_AuthStore);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -301,54 +305,100 @@ var UploadActions = (function () {
   function UploadActions() {
     _classCallCheck(this, UploadActions);
 
-    this.generateActions('updateTitle', 'updateDescription', 'uploadVideoSuccess', 'uploadVideoFail');
+    this.generateActions('updateTitle', 'updateDescription', 'uploadVideoSuccess', 'uploadVideoFail', 'updateProgress', 'updateSignedUrl', 'getTheFile', 'getSignedURL');
   }
+
+  /*
+  	Function to get the temporary signed request from the app.
+  	If request successful, continue to upload the file using this signed
+  	request.
+  */
 
   _createClass(UploadActions, [{
     key: 'uploadVideoS3',
-    value: function uploadVideoS3(file) {
-      console.log(file.name);
+    value: function uploadVideoS3(file, userUUID) {
+      var _this = this;
+
       $.ajax({
-        url: '/api/S3',
-        type: 'GET',
-        data: { name: file.name, size: file.size, type: file.type }
+        url: '/api/createVideo',
+        type: 'PUT',
+        data: { userUUID: userUUID }
       }).done(function (data) {
-        console.log('here we go');
-        console.log(file);
-        console.log(data.signedUrl);
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", data.signedUrl);
-        xhr.setRequestHeader('x-amz-acl', 'public-read');
-        xhr.onload = function () {
-          if (xhr.status === 200) {
-            console.log('sweet');
+        _this.actions.uploadVideoSuccess(file);
+        var vidID = data.videoID;
+        $.ajax({
+          url: '/api/sign_s3',
+          type: 'POST',
+          data: {
+            file_name: vidID,
+            file_type: file.type
           }
-        };
-        xhr.onerror = function () {
-          alert("Could not upload file.");
-        };
-        xhr.send(file);
-      }); /*
-          $.ajax({
-           url: data.signedrequest,
-           method: 'PUT',
-           data: file,
-           cache: false,
-           processData: false, // Don't process the files
-           contentType: false, // Set content type to false as jQuery will tell the server its a query string request
-          }).done((data) => {
-           this.actions.uploadVideoSuccess(data);
-          }).fail(() => {
-             this.actions.uploadVideoFail();
-           });
-          });
-          */
+        }).done(function (response) {
+          console.log(response.signed_request);
+          console.log(file);
+          _this.actions.uploadTheVideo(file, response.signed_request);
+        }).fail(function (error) {
+          //console
+
+        });
+      }).fail(function (error) {
+        //Could not upload video
+      });
     }
+
+    /*
+        Function to carry out the actual PUT request to S3 using the signed request from the app.
+    */
+
   }, {
-    key: 'uploadVideoData',
-    value: function uploadVideoData(data) {
-      //UPLOAD VIDEO META DATA TO POSTGRES
+    key: 'uploadTheVideo',
+    value: function uploadTheVideo(file, signed_request) {
+
+      var xhr = new XMLHttpRequest();
+      xhr.open("PUT", signed_request);
+      xhr.setRequestHeader('x-amz-acl', 'public-read');
+      xhr.onload = function () {
+        if (xhr.status === 200) {
+          alert("file uploaded successfully!");
+        }
+      };
+      xhr.onerror = function () {
+        alert("Could not upload file.");
+      };
+
+      xhr.addEventListener('progress', function (e) {
+        var percentComplete = Math.round(e.loaded * 100 / e.total);
+        console.log(percentComplete);
+        this.actions.updateProgress(percentComplete);
+      });
+
+      xhr.send(file);
     }
+    /*
+                console.log(file);
+                var xhr = new XMLHttpRequest();
+                xhr.open("PUT", signed_request);
+                xhr.setRequestHeader('x-amz-acl', 'public-read');
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                      //Make Load screen
+                      alert("File Uploaded Successfully!");
+                    }
+                };
+                xhr.onerror = function() {
+                    alert("Could not upload file.");
+                    console.log(xhr.error);
+                };
+    
+                xhr.upload.addEventListener('progress', function(e) {
+                  var percentComplete = Math.round(e.loaded * 100 / e.total);
+                  this.actions.updateProgress(percentComplete);
+                });
+    
+    
+                xhr.send();
+            }*/
+
   }]);
 
   return UploadActions;
@@ -356,7 +406,7 @@ var UploadActions = (function () {
 
 exports.default = _alt2.default.createActions(UploadActions);
 
-},{"../alt":8}],7:[function(require,module,exports){
+},{"../alt":8,"../stores/AuthStore":22}],7:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1470,6 +1520,10 @@ var _UploadActions = require('../actions/UploadActions');
 
 var _UploadActions2 = _interopRequireDefault(_UploadActions);
 
+var _AuthStore = require('../stores/AuthStore');
+
+var _AuthStore2 = _interopRequireDefault(_AuthStore);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1514,18 +1568,8 @@ var Upload = (function (_React$Component) {
       this.state.processing = true;
       var reader = new FileReader();
       var file = e.target.files[0];
-      console.log(file.name);
-      _UploadActions2.default.uploadVideoS3(file);
-      /*
-          reader.readAsDataURL(file);
-          reader.onload = function(upload) {
-              this.setState({
-                  data_uri: upload.target.result
-              });
-              formData.append('files', this.state.data_uri);
-              UploadActions.uploadVideoS3(file);
-          }.bind(this);
-      */
+      var userUUID = _AuthStore2.default.state.userUUID;
+      _UploadActions2.default.uploadVideoS3(file, userUUID);
     }
   }, {
     key: 'render',
@@ -1648,7 +1692,7 @@ var Upload = (function (_React$Component) {
 
 exports.default = Upload;
 
-},{"../actions/UploadActions":6,"../stores/UploadStore":27,"react":"react"}],17:[function(require,module,exports){
+},{"../actions/UploadActions":6,"../stores/AuthStore":22,"../stores/UploadStore":27,"react":"react"}],17:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -2120,6 +2164,7 @@ var AuthStore = (function () {
     this.bindActions(_AuthActions2.default);
     this._user = null;
     this._jwt = null;
+    this.userUUID = null;
     this.emailAttempt = '';
     this.passwordAttempt = '';
     this.failedAttempt = false;
@@ -2140,13 +2185,14 @@ var AuthStore = (function () {
     value: function onAutoLoginSuccess(data) {
       this._jwt = data.token;
       this._user = (0, _jwtDecode2.default)(data.token);
+      this.userUUID = this._user.uuid;
     }
   }, {
     key: 'onLoginUserSuccess',
     value: function onLoginUserSuccess(data) {
       this._jwt = data.token;
       this._user = (0, _jwtDecode2.default)(data.token);
-      console.log(this._user);
+      this.userUUID = this._user.uuid;
       localStorage.setItem('jwt', this._jwt);
       window.location.assign("/");
     }
@@ -2490,18 +2536,29 @@ var UploadStore = (function () {
     this.vidDesc = "";
     this.bones = "";
     this.file = null;
-    this.uploadProgress = '25%';
+    this.uploadProgress = 0;
     this.processing = false;
     this.data_uri = null;
     this.fileName = null;
     this.fileType = null;
+    this.signedURL = null;
   }
 
   _createClass(UploadStore, [{
+    key: 'onUpdateSignedUrl',
+    value: function onUpdateSignedUrl(data) {
+      this.signedURL = data;
+      console.log('bitch please');
+    }
+  }, {
     key: 'onUploadVideoSuccess',
     value: function onUploadVideoSuccess(data) {
-      console.log('hello');
       this.file = data;
+    }
+  }, {
+    key: 'onUpdateProgress',
+    value: function onUpdateProgress(event) {
+      this.uploadProgress = event.target.value;
     }
   }, {
     key: 'onUpdateTitle',
@@ -2518,6 +2575,16 @@ var UploadStore = (function () {
     key: 'onUploadVideoFail',
     value: function onUploadVideoFail() {
       console.log('nah');
+    }
+  }, {
+    key: 'onGetTheFile',
+    value: function onGetTheFile() {
+      return this.file;
+    }
+  }, {
+    key: 'onGetSignedURL',
+    value: function onGetSignedURL() {
+      return this.signedURL;
     }
   }]);
 

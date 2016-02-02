@@ -8,16 +8,24 @@ class UploadStore {
     this.vidDesc = "";
     this.bones = "";
     this.file = null;
-    this.uploadProgress = '25%';
+    this.uploadProgress =0;
     this.processing = false;
     this.data_uri = null;
     this.fileName = null;
     this.fileType = null;
+    this.signedURL = null;
   }
 
+  onUpdateSignedUrl(data) {
+    this.signedURL = data;
+    console.log('bitch please');
+  }
   onUploadVideoSuccess(data) {
-    console.log('hello');
     this.file = data;
+  }
+
+  onUpdateProgress(event) {
+    this.uploadProgress = event.target.value;
   }
   onUpdateTitle(event) {
     this.vidTitle = event.target.value;
@@ -30,6 +38,14 @@ class UploadStore {
 
   onUploadVideoFail() {
     console.log('nah');
+  }
+
+  onGetTheFile() {
+    return this.file;
+  }
+
+  onGetSignedURL() {
+    return this.signedURL;
   }
 }
 

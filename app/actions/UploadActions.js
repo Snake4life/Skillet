@@ -1,4 +1,5 @@
 import alt from '../alt';
+import AuthStore from '../stores/AuthStore';
 
 class UploadActions {
   constructor() {
@@ -6,52 +7,98 @@ class UploadActions {
       'updateTitle',
       'updateDescription',
       'uploadVideoSuccess',
-      'uploadVideoFail'
+      'uploadVideoFail',
+      'updateProgress',
+      'updateSignedUrl',
+      'getTheFile',
+      'getSignedURL'
     );
     }
 
-    uploadVideoS3(file) {
-      console.log(file.name);
-      $.ajax({
-					url: '/api/S3',
-					type: 'GET',
-					data: {name: file.name, size: file.size, type:file.type},
-        }).done((data) => {
-          console.log('here we go')
-          console.log(file);
-          console.log(data.signedUrl);
-          var xhr = new XMLHttpRequest();
-          xhr.open("POST", data.signedUrl);
-          xhr.setRequestHeader('x-amz-acl', 'public-read');
-          xhr.onload = function() {
-          if (xhr.status === 200) {
-            console.log('sweet');
-            }
-          };
-          xhr.onerror = function() {
-            alert("Could not upload file.");
-          };
-          xhr.send(file);
-        });/*
-          $.ajax({
-            url: data.signedrequest,
-            method: 'PUT',
-            data: file,
-            cache: false,
-            processData: false, // Don't process the files
-            contentType: false, // Set content type to false as jQuery will tell the server its a query string request
-          }).done((data) => {
-            this.actions.uploadVideoSuccess(data);
-          }).fail(() => {
-              this.actions.uploadVideoFail();
-            });
-          });
-          */
-        }
 
-    uploadVideoData(data) {
-      //UPLOAD VIDEO META DATA TO POSTGRES
+    /*
+    	Function to get the temporary signed request from the app.
+    	If request successful, continue to upload the file using this signed
+    	request.
+    */
+
+    uploadVideoS3(file, userUUID) {
+      $.ajax({
+	       url: '/api/createVideo',
+	       type: 'PUT',
+	       data: {userUUID: userUUID}
+        }).done((data) => {
+          this.actions.uploadVideoSuccess(file);
+          var vidID = data.videoID;
+          $.ajax({
+            url: '/api/sign_s3',
+            type: 'POST',
+            data: {
+              file_name: vidID,
+              file_type: file.type
+            }
+          }).done((response) => {
+            console.log(response.signed_request);
+            console.log(file);
+            this.actions.uploadTheVideo(file, response.signed_request);
+          }).fail((error) => {
+            //console
+
+		    });
+      }).fail((error) => {
+			      //Could not upload video
+		  });
     }
+
+        /*
+            Function to carry out the actual PUT request to S3 using the signed request from the app.
+        */
+          uploadTheVideo(file, signed_request) {
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("PUT", signed_request);
+    xhr.setRequestHeader('x-amz-acl', 'public-read');
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            alert("file uploaded successfully!");
+        }
+    };
+    xhr.onerror = function() {
+        alert("Could not upload file.");
+    };
+
+    xhr.addEventListener('progress', function(e) {
+      var percentComplete = Math.round(e.loaded * 100 / e.total);
+      console.log(percentComplete);
+      this.actions.updateProgress(percentComplete);
+    });
+
+    xhr.send(file);
+}
+/*
+            console.log(file);
+            var xhr = new XMLHttpRequest();
+            xhr.open("PUT", signed_request);
+            xhr.setRequestHeader('x-amz-acl', 'public-read');
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                  //Make Load screen
+                  alert("File Uploaded Successfully!");
+                }
+            };
+            xhr.onerror = function() {
+                alert("Could not upload file.");
+                console.log(xhr.error);
+            };
+
+            xhr.upload.addEventListener('progress', function(e) {
+              var percentComplete = Math.round(e.loaded * 100 / e.total);
+              this.actions.updateProgress(percentComplete);
+            });
+
+
+            xhr.send();
+        }*/
 
   }
 

@@ -1,49 +1,59 @@
 var express = require('express');
 var knox = require('knox');
-var AWS = require('aws-sdk');
-/*
-var client = knox.createClient({
-    key: 'AKIAIXKBT23U2MK5ZQYQ',
-    secret: '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',
-    bucket: 'd3jxcxdq69ksam.cloudfront.net'
-});
-*/
+var aws = require('aws-sdk');
+var models  = require('../models');
 
 
-var AWS_ACCESS_KEY = process.env.AWS_ACCESS_KEY_ID;
-var AWS_SECRET_KEY = process.env.AWS_SECRET_ACCESS_KEY;
-var S3_BUCKET = process.env.S3_BUCKET_NAME;
 
-AWS.config.update({accessKeyId: AWS_ACCESS_KEY, secretAccessKey: AWS_SECRET_KEY});
-AWS.config.region = 'us-east-1';
+var AWS_ACCESS_KEY = process.env.AWS_ACCESS_KEY_ID || "AKIAINSA46U7PAFXK4RA";
+var AWS_SECRET_KEY = process.env.AWS_SECRET_ACCESS_KEY || "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";
+var S3_BUCKET = process.env.S3_BUCKET_NAME || "testskillittv";
+
+
 
 module.exports = function(app) {
-
-  app.post('/api/uploadS3', function(req, res) {
-    var videoFile = req.body;
-//    var stream = fs.createReadStream(file.path)
-    console.log('GOT TO THE UPLOAD SHIT');
-    console.log(req.files.file1);
-    res.send('Thank you for uploading!');
-  });
-
-
-  app.get('/api/S3', function(req, res) {
-    var s3 = new AWS.S3();
-    var params = {Bucket: S3_BUCKET, Key: req.query.name, ContentType: req.query.type};
-    s3.getSignedUrl('putObject', params, function(err, data) {
-        if(err) {
+/*
+ * Respond to GET requests to /sign_s3.
+ * Upon request, return JSON containing the temporarily-signed S3 request and the
+ * anticipated URL of the image.
+ */
+app.post('/api/sign_s3', function(req, res){
+  console.log(req.body.file_name);
+    aws.config.update({accessKeyId: AWS_ACCESS_KEY , secretAccessKey: AWS_SECRET_KEY });
+    aws.config.update({region: 'us-east-1' , signatureVersion: 'v4' });
+    var s3 = new aws.S3();
+    var s3_params = {
+        Bucket: S3_BUCKET,
+        Key: req.body.file_name,
+        Expires: 60,
+        ContentType: req.body.file_type,
+        ACL: 'public-read'
+    };
+    s3.getSignedUrl('putObject', s3_params, function(err, data){
+        if(err){
             console.log(err);
         }
-        else {
+        else{
             var return_data = {
-                signedUrl: data,
-                url: 'https://s3.amazonaws.com/'+params.Bucket+'/'+req.query.name
+                signed_request: data,
+                url: 'https://'+S3_BUCKET+'.s3.amazonaws.com/'+req.body.file_name
             };
-            console.log(JSON.stringify(return_data));
-            res.json(return_data);
+            res.send(return_data);
             res.end();
         }
-  });
+    });
+});
+
+app.put('/api/createVideo', function(req, res) {
+    models.Video.create({
+        title: "Video Title",
+        views: 0,
+        UserUuid: req.body.userUUID
+    }).then(function(videoData) {
+        res.send(videoData);
+        res.end();
+    }).catch(function(error) {
+        res.send(error);
+    });
 });
 }

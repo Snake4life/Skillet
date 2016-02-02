@@ -1,7 +1,7 @@
 import React from 'react';
 import UploadStore from '../stores/UploadStore';
 import UploadActions from '../actions/UploadActions';
-
+import AuthStore from '../stores/AuthStore';
 
 class Upload extends React.Component {
   constructor(props) {
@@ -28,19 +28,8 @@ class Upload extends React.Component {
     this.state.processing = true;
     const reader = new FileReader();
     const file = e.target.files[0];
-    console.log(file.name);
-    UploadActions.uploadVideoS3(file);
-/*
-    reader.readAsDataURL(file);
-    reader.onload = function(upload) {
-        this.setState({
-            data_uri: upload.target.result
-        });
-        formData.append('files', this.state.data_uri);
-        UploadActions.uploadVideoS3(file);
-    }.bind(this);
-*/
-
+    var userUUID = AuthStore.state.userUUID;
+    UploadActions.uploadVideoS3(file, userUUID);
 
   }
 
