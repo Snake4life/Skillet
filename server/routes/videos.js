@@ -5,9 +5,9 @@ var models  = require('../models');
 
 
 
-var AWS_ACCESS_KEY = process.env.AWS_ACCESS_KEY_ID || "AKIAINSA46U7PAFXK4RA";
-var AWS_SECRET_KEY = process.env.AWS_SECRET_ACCESS_KEY || "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";
-var S3_BUCKET = process.env.S3_BUCKET_NAME || "testskillittv";
+var AWS_ACCESS_KEY = process.env.AWS_ACCESS_KEY_ID;
+var AWS_SECRET_KEY = process.env.AWS_SECRET_ACCESS_KEY;
+var S3_BUCKET = process.env.S3_BUCKET_NAME;
 
 
 
@@ -54,6 +54,27 @@ app.put('/api/createVideo', function(req, res) {
         res.end();
     }).catch(function(error) {
         res.send(error);
+    });
+});
+
+app.post('/api/updateVideo', function(req, res) {
+    models.Video.find({
+        where: {videoID: req.body.videoID}})
+      .then(function(video) {
+        if(video) {
+            video.updateAttributes({
+                title: req.body.title,
+                description: req.body.description
+            }).then(function(data) {
+                res.send(data);
+            }).catch(function(error) {
+                res.send('Could not update video fields');
+            });
+        } else {
+            res.send('Error on video upload');
+        }
+    }).catch(function(error) {
+        res.send('Video upload corrupted.');
     });
 });
 }
