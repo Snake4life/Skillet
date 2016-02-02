@@ -38,8 +38,6 @@ class UploadActions {
               file_type: file.type
             }
           }).done((response) => {
-            console.log(response.signed_request);
-            console.log(file);
             this.actions.uploadTheVideo(file, response.signed_request);
           }).fail((error) => {
             //console
@@ -55,51 +53,36 @@ class UploadActions {
         */
           uploadTheVideo(file, signed_request) {
 
-    var xhr = new XMLHttpRequest();
-    xhr.open("PUT", signed_request);
-    xhr.setRequestHeader('x-amz-acl', 'public-read');
-    xhr.onload = function() {
-        if (xhr.status === 200) {
-            alert("file uploaded successfully!");
-        }
-    };
-    xhr.onerror = function() {
-        alert("Could not upload file.");
-    };
+              var xhr = new XMLHttpRequest();
+              var self = this;
+              xhr.open("PUT", signed_request);
+              xhr.setRequestHeader('x-amz-acl', 'public-read');
+              xhr.onload = function() {
+                  if (xhr.status === 200) {
+                      console.log("file uploaded successfully!");
+                  }
+              };
+              xhr.onerror = function() {
+                  alert("Could not upload file.");
+              };
+              xhr.upload.onprogress = function(e)	{
+	               if (e.lengthComputable)
+	                {
+	                   var percentage = String(Math.round((e.loaded/e.total)*100));
+	                   self.actions.updateProgress(percentage);
+	                   }
+	                    else
+	                     {
+	  	                     console.log("Unable to compute progress information since the total size is unknown");
+	                        }
+	                       };
+  /*              this.actions.updateProgress(percentComplete);
+              }
+*/
 
-    xhr.addEventListener('progress', function(e) {
-      var percentComplete = Math.round(e.loaded * 100 / e.total);
-      console.log(percentComplete);
-      this.actions.updateProgress(percentComplete);
-    });
+              xhr.send(file);
+          }
 
-    xhr.send(file);
 }
-/*
-            console.log(file);
-            var xhr = new XMLHttpRequest();
-            xhr.open("PUT", signed_request);
-            xhr.setRequestHeader('x-amz-acl', 'public-read');
-            xhr.onload = function() {
-                if (xhr.status === 200) {
-                  //Make Load screen
-                  alert("File Uploaded Successfully!");
-                }
-            };
-            xhr.onerror = function() {
-                alert("Could not upload file.");
-                console.log(xhr.error);
-            };
-
-            xhr.upload.addEventListener('progress', function(e) {
-              var percentComplete = Math.round(e.loaded * 100 / e.total);
-              this.actions.updateProgress(percentComplete);
-            });
-
-
-            xhr.send();
-        }*/
-
-  }
 
 export default alt.createActions(UploadActions);

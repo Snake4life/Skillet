@@ -334,8 +334,6 @@ var UploadActions = (function () {
             file_type: file.type
           }
         }).done(function (response) {
-          console.log(response.signed_request);
-          console.log(file);
           _this.actions.uploadTheVideo(file, response.signed_request);
         }).fail(function (error) {
           //console
@@ -355,50 +353,31 @@ var UploadActions = (function () {
     value: function uploadTheVideo(file, signed_request) {
 
       var xhr = new XMLHttpRequest();
+      var self = this;
       xhr.open("PUT", signed_request);
       xhr.setRequestHeader('x-amz-acl', 'public-read');
       xhr.onload = function () {
         if (xhr.status === 200) {
-          alert("file uploaded successfully!");
+          console.log("file uploaded successfully!");
         }
       };
       xhr.onerror = function () {
         alert("Could not upload file.");
       };
-
-      xhr.addEventListener('progress', function (e) {
-        var percentComplete = Math.round(e.loaded * 100 / e.total);
-        console.log(percentComplete);
-        this.actions.updateProgress(percentComplete);
-      });
+      xhr.upload.onprogress = function (e) {
+        if (e.lengthComputable) {
+          var percentage = String(Math.round(e.loaded / e.total * 100));
+          self.actions.updateProgress(percentage);
+        } else {
+          console.log("Unable to compute progress information since the total size is unknown");
+        }
+      };
+      /*              this.actions.updateProgress(percentComplete);
+                  }
+      */
 
       xhr.send(file);
     }
-    /*
-                console.log(file);
-                var xhr = new XMLHttpRequest();
-                xhr.open("PUT", signed_request);
-                xhr.setRequestHeader('x-amz-acl', 'public-read');
-                xhr.onload = function() {
-                    if (xhr.status === 200) {
-                      //Make Load screen
-                      alert("File Uploaded Successfully!");
-                    }
-                };
-                xhr.onerror = function() {
-                    alert("Could not upload file.");
-                    console.log(xhr.error);
-                };
-    
-                xhr.upload.addEventListener('progress', function(e) {
-                  var percentComplete = Math.round(e.loaded * 100 / e.total);
-                  this.actions.updateProgress(percentComplete);
-                });
-    
-    
-                xhr.send();
-            }*/
-
   }]);
 
   return UploadActions;
@@ -2548,7 +2527,6 @@ var UploadStore = (function () {
     key: 'onUpdateSignedUrl',
     value: function onUpdateSignedUrl(data) {
       this.signedURL = data;
-      console.log('bitch please');
     }
   }, {
     key: 'onUploadVideoSuccess',
@@ -2557,8 +2535,9 @@ var UploadStore = (function () {
     }
   }, {
     key: 'onUpdateProgress',
-    value: function onUpdateProgress(event) {
-      this.uploadProgress = event.target.value;
+    value: function onUpdateProgress(percentage) {
+      console.log('hi');
+      this.uploadProgress = percentage + '%';
     }
   }, {
     key: 'onUpdateTitle',

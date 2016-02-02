@@ -18,14 +18,15 @@ class UploadStore {
 
   onUpdateSignedUrl(data) {
     this.signedURL = data;
-    console.log('bitch please');
+
   }
   onUploadVideoSuccess(data) {
     this.file = data;
   }
 
-  onUpdateProgress(event) {
-    this.uploadProgress = event.target.value;
+  onUpdateProgress(percentage) {
+    console.log('hi');
+    this.uploadProgress = percentage + '%';
   }
   onUpdateTitle(event) {
     this.vidTitle = event.target.value;
