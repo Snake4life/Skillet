@@ -35,7 +35,7 @@ class Watch extends React.Component {
     };
     var vidID = this.props.params
     var vidName = 'https://s3.amazonaws.com/testskillittv/' + vidID.vKey + '.mp4';
-    console.log(vidID);
+    var poster = vidName.replace(/.mp4/, '.jpg');
     return (
       <div className="col-md-12" style={centered}>
         <div style={centered}>
@@ -43,7 +43,7 @@ class Watch extends React.Component {
       <p>{this.state.video['views'] + ' views'}</p>
       <div className="row">
               <div className="col-md-6">
-      <Video src={vidName} poster="http://thumbnails.thisisepic.com/b1ce00de-e687-4c1b-97ac-afa05a287327/large/frame_0005.png" />
+      <Video src={vidName} poster={poster} />
     </div>
 
 

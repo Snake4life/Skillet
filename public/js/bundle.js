@@ -769,7 +769,7 @@ var Home = (function (_React$Component) {
                 _react2.default.createElement(
                   'h3',
                   null,
-                  'For You'
+                  'Featured'
                 )
               ),
               _react2.default.createElement(
@@ -791,7 +791,7 @@ var Home = (function (_React$Component) {
                 _react2.default.createElement(
                   'h3',
                   null,
-                  'Popular'
+                  'New'
                 )
               ),
               _react2.default.createElement(
@@ -1880,7 +1880,9 @@ var VideoPreview = (function (_React$Component) {
       };
       var listyle = {
         display: 'inline-block',
-        paddingRight: '10px'
+        paddingRight: '10px',
+        width: '300px',
+        height: '310px'
       };
       var vKey = '/watch/' + this.props.vkey;
       return _react2.default.createElement(
@@ -2003,7 +2005,7 @@ var Watch = (function (_React$Component) {
       };
       var vidID = this.props.params;
       var vidName = 'https://s3.amazonaws.com/testskillittv/' + vidID.vKey + '.mp4';
-      console.log(vidID);
+      var poster = vidName.replace(/.mp4/, '.jpg');
       return _react2.default.createElement(
         'div',
         { className: 'col-md-12', style: centered },
@@ -2026,7 +2028,7 @@ var Watch = (function (_React$Component) {
             _react2.default.createElement(
               'div',
               { className: 'col-md-6' },
-              _react2.default.createElement(_Video2.default, { src: vidName, poster: 'http://thumbnails.thisisepic.com/b1ce00de-e687-4c1b-97ac-afa05a287327/large/frame_0005.png' })
+              _react2.default.createElement(_Video2.default, { src: vidName, poster: poster })
             ),
             _react2.default.createElement(
               'div',
@@ -2334,32 +2336,6 @@ var HomeStore = (function () {
     _classCallCheck(this, HomeStore);
 
     this.bindActions(_HomeActions2.default);
-    /*    this.recendVids = [
-          {
-            vkey: '1',
-            title: 'How To: Jump Start a Car',
-            author: 'CarExpert9',
-            views: '138,107'
-          },
-          {
-            vkey: '00002',
-            title:'How To: Open a wine bottle',
-            author: 'Somal1',
-            views: '47,493'
-          },
-          {
-            vkey: '00003',
-            title:'How To: Tie a tie',
-            author: 'DressForSuccess',
-            views: '104,133'
-          },
-          {
-            vkey: '00004',
-            title:'How To: Do a kickflip',
-            author: 'Skrillskill',
-            views: '89,192'
-          }
-        ]; */
     this.recentVids = [];
     this.popVids = [];
   }
@@ -2371,8 +2347,9 @@ var HomeStore = (function () {
         this.recentVids.push({
           videoID: data[i].videoID,
           title: data[i].title,
-          author: data[i].description,
-          user: data[i].UserUuid
+          author: data[i].UserUuid,
+          views: data[i].views,
+          description: data[i].description
         });
       }
       console.log(this.recentVids);

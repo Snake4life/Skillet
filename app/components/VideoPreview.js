@@ -10,7 +10,9 @@ class VideoPreview extends React.Component {
     }
     var listyle = {
       display: 'inline-block',
-      paddingRight: '10px'
+      paddingRight: '10px',
+      width: '300px',
+      height: '310px'
     }
     var vKey = '/watch/' + this.props.vkey;
     return (

@@ -39,7 +39,7 @@ class Home extends React.Component {
           <li>
             <div className="col-md-12 col-centered">
               <div className='page-header'>
-                <h3>For You</h3>
+                <h3>Featured</h3>
                 </div>
 
               <ul className='pager'>
@@ -51,7 +51,7 @@ class Home extends React.Component {
         <li>
           <div className="col-md-12 col-centered">
             <div className='page-header'>
-              <h3>Popular</h3>
+              <h3>New</h3>
               </div>
 
             <ul className='pager'>
