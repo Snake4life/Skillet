@@ -6,22 +6,18 @@ class UploadStore {
     this.bindActions(UploadActions);
     this.vidTitle = "";
     this.vidDesc = "";
-    this.bones = "";
     this.file = null;
-    this.uploadProgress =0;
-    this.processing = false;
-    this.data_uri = null;
+    this.uploadProgress = 0;
     this.fileName = null;
     this.fileType = null;
     this.signedURL = null;
+    this.videoID = null;
   }
 
-  onUpdateSignedUrl(data) {
-    this.signedURL = data;
-
-  }
-  onUploadVideoSuccess(data) {
-    this.file = data;
+  onUploadVideoSuccess(payload) {
+    this.file = payload.file;
+    this.videoID = payload.vidID;
+    console.log(this.videoID);
   }
 
   onUpdateProgress(percentage) {

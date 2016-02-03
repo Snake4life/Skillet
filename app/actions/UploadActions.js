@@ -28,14 +28,14 @@ class UploadActions {
 	       type: 'PUT',
 	       data: {userUUID: userUUID}
         }).done((data) => {
-          this.actions.uploadVideoSuccess(file);
           var vidID = data.videoID;
+          this.actions.uploadVideoSuccess({file: file, vidID: vidID});
           $.ajax({
             url: '/api/sign_s3',
             type: 'POST',
             data: {
               file_name: vidID,
-              file_type: file.type
+              file_type: file.name
             }
           }).done((response) => {
             this.actions.uploadTheVideo(file, response.signed_request);
@@ -52,7 +52,6 @@ class UploadActions {
             Function to carry out the actual PUT request to S3 using the signed request from the app.
         */
           uploadTheVideo(file, signed_request) {
-
               var xhr = new XMLHttpRequest();
               var self = this;
               xhr.open("PUT", signed_request);
@@ -76,13 +75,29 @@ class UploadActions {
 	  	                     console.log("Unable to compute progress information since the total size is unknown");
 	                        }
 	                       };
-  /*              this.actions.updateProgress(percentComplete);
-              }
-*/
 
               xhr.send(file);
           }
 
-}
+/*
+    Function to update the video title and description based on its unique identifier .
+*/
+          uploadVideoPG(payload) {
+            $.ajax({
+              url: '/api/updateVideo',
+              type: 'POST',
+              data: {
+                title: payload.title,
+                description: payload.description,
+                vidID: payload.vidID
+              }
+            }).done((data) => {
+              console.log(data);
+              alert('Video Successfully Uploaded');
+            }).fail((error) => {
+              alert('Error: Video Failed to Upload');
+            });
+          }
+      }
 
 export default alt.createActions(UploadActions);

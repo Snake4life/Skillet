@@ -6,6 +6,7 @@ import AuthStore from '../stores/AuthStore';
 import AuthActions from '../actions/AuthActions';
 import {NavDropdown, MenuItem} from 'react-bootstrap';
 
+
 class Navbar extends React.Component {
   constructor(props) {
     super(props);
@@ -15,10 +16,6 @@ class Navbar extends React.Component {
 
   componentDidMount() {
     NavbarStore.listen(this.onChange);
-    let socket = io.connect();
-    socket.on('onlineUsers', (data) => {
-      NavbarActions.updateOnlineUsers(data);
-    });
 
     $(document).ajaxStart(() => {
       NavbarActions.updateAjaxAnimation('fadeIn');

@@ -4,9 +4,9 @@ import HomeActions from '../actions/HomeActions';
 class HomeStore {
   constructor() {
     this.bindActions(HomeActions);
-    this.recVids = [
+/*    this.recendVids = [
       {
-        vkey: '00001',
+        vkey: '1',
         title: 'How To: Jump Start a Car',
         author: 'CarExpert9',
         views: '138,107'
@@ -29,22 +29,29 @@ class HomeStore {
         author: 'Skrillskill',
         views: '89,192'
       }
-    ];
+    ]; */
+    this.recentVids = [];
     this.popVids = [];
-    this.newVids = [];
   }
 
-  getReccomendedVideosSuccess(data) {
-    this.recVids = data;
-    print(this.recVids);
+  getRecentVideosSuccess(data) {
+    for (var i = 0, len=data.length; i < len; i++) {
+      this.recentVids.push({
+        videoID: data[i].videoID,
+        title: data[i].title,
+        author: data[i].description,
+        user: data[i].UserUuid
+      });
+    }
+    console.log(this.recentVids);
   }
 
   getPopularVideosSuccess(data) {
     this.popVids = data;
   }
 
-  getNewVideosSuccess(data) {
-    this.newVids = data;
+  getRecentVideosFail() {
+    console.log('Failed to Load Recent Videos');
   }
 
 }

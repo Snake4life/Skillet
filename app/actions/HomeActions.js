@@ -7,14 +7,27 @@ class HomeActions {
       'getRecommendedVideosFail',
       'getPopularVideosSuccess',
       'getPopularVideosFail',
-      'getNewVideosSuccess',
-      'getNewVideosFail'
+      'getRecentVideosSuccess',
+      'getRecentVideosFail'
     );
   }
 
   getReccomendedVideos() {
 
   this.actions.getReccomendedVideosSuccess(recvids)
+  }
+
+  getRecentVideos() {
+    console.log('Retrieving Recent Videos');
+    $.ajax({
+      url: '/api/recentVideos',
+      type: 'GET'
+    }).done((data) => {
+      console.log(data);
+      this.actions.getRecentVideosSuccess(data);
+    }).fail(() => {
+      this.actions.getRecentVideosFail();
+    })
   }
 
   getPopularVideos() {

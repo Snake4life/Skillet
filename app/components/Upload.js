@@ -33,6 +33,16 @@ class Upload extends React.Component {
 
   }
 
+  handleSubmit(e) {
+    e.preventDefault();
+    console.log(this.state.videoID);
+    UploadActions.uploadVideoPG({
+      title: this.state.vidTitle,
+      description: this.state.vidDesc,
+      vidID: this.state.videoID
+    });
+  }
+
   render() {
     var inputStyle = {
       height: '100',
@@ -87,7 +97,7 @@ class Upload extends React.Component {
                     <h3>Upload</h3>
         <div className="content">
           <div className="panel" id="upload">
-            <form ref="upload">
+            <form ref="upload" onSubmit={this.handleSubmit.bind(this)}>
               <div className="form-group">
                 {uploadElement}
               </div>

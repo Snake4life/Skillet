@@ -15,6 +15,7 @@ module.exports = function(sequelize, DataTypes) {
 		},
 		name: {
 			type: DataTypes.STRING,
+			primaryKey: true,
 			allowNull: false,
 			unique: true
 		},
@@ -25,7 +26,7 @@ module.exports = function(sequelize, DataTypes) {
 			associate: function(models) {
 				User.hasMany(models.Video);
 			}
-		} 
+		}
 	});
 	return User;
 };

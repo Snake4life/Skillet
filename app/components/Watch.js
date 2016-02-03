@@ -33,7 +33,9 @@ class Watch extends React.Component {
       marginLeft: 'auto',
       marginRight: 'auto',
     };
-    var vidName = 'http://videos.thisisepic.com/2b9c1bf3-e19b-4be5-9d36-246c5d3607d8/high.mp4'
+    var vidID = this.props.params
+    var vidName = 'https://s3.amazonaws.com/testskillittv/' + vidID.vKey + '.mp4';
+    console.log(vidID);
     return (
       <div className="col-md-12" style={centered}>
         <div style={centered}>

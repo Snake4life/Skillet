@@ -12,9 +12,9 @@ class Home extends React.Component {
 
   componentDidMount() {
     HomeStore.listen(this.onChange);
-    HomeActions.getRecommendedVideos();
-    HomeActions.getPopularVideos();
-    HomeActions.getNewVideos();
+    if (this.state.recentVids.length === 0) {
+      HomeActions.getRecentVideos();
+    }
   }
 
   componentWillUnmount() {
@@ -28,9 +28,9 @@ class Home extends React.Component {
     var ulStyle = {
       listStyleType: 'none'
     }
-    let recommendedVideos = this.state.recVids.map((video) => {
+    let recentVideos = this.state.recentVids.map((video) => {
       return (
-          <VideoPreview key={video.vkey} vkey={video.vkey} title={video.title} views={video.views} author={video.author}></VideoPreview>
+          <VideoPreview key={video.videoID} vkey={video.videoID} title={video.title} views={video.views} author={video.author}></VideoPreview>
       )
     });
     return (
@@ -43,7 +43,7 @@ class Home extends React.Component {
                 </div>
 
               <ul className='pager'>
-                {recommendedVideos}
+                {recentVideos}
               </ul>
 
             </div>
@@ -55,7 +55,7 @@ class Home extends React.Component {
               </div>
 
             <ul className='pager'>
-              {recommendedVideos}
+              {recentVideos}
             </ul>
 
           </div>
@@ -67,7 +67,7 @@ class Home extends React.Component {
               </div>
 
             <ul className='pager'>
-              {recommendedVideos}
+              {recentVideos}
             </ul>
 
           </div>

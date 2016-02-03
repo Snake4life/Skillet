@@ -6,6 +6,7 @@ class Video extends React.Component {
 
 
   componentDidMount() {
+    console.log('Video component did mount');
     this.checkIfVideoNeedsInstallation();
   }
 
@@ -14,21 +15,23 @@ class Video extends React.Component {
   }
 
   checkIfVideoNeedsInstallation() {
-    if(!this.props.src)
+    console.log('Check if video needs installation');
+/*    if(!this.props.src)
       return;
-
+*/
     this.loadVideo();
   }
 
   loadVideo() {
-    if(this.video || !this.props.src)
+    console.log('Loading Video');
+/*    if(this.video || !this.props.src)
       return;
-
+*/
 //    let node = React.findDOMNode(this.refs.videoPlayer);
     let node = ReactDOM.findDOMNode(this.refs.videoPlayer);
-    if(!node) 
+/*    if(!node)
       return;
-
+*/
 
     this.video = document.createElement('video');
     this.video.src = this.props.src;

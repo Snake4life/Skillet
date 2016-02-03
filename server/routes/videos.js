@@ -5,9 +5,9 @@ var models  = require('../models');
 
 
 
-var AWS_ACCESS_KEY = process.env.AWS_ACCESS_KEY_ID;
-var AWS_SECRET_KEY = process.env.AWS_SECRET_ACCESS_KEY;
-var S3_BUCKET = process.env.S3_BUCKET_NAME;
+var AWS_ACCESS_KEY = process.env.AWS_ACCESS_KEY_ID || "AKIAIN27PH4D3K6MEBZA";
+var AWS_SECRET_KEY = process.env.AWS_SECRET_ACCESS_KEY || "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";
+var S3_BUCKET = process.env.S3_BUCKET_NAME || "testskillittv";
 
 
 
@@ -18,13 +18,18 @@ module.exports = function(app) {
  * anticipated URL of the image.
  */
 app.post('/api/sign_s3', function(req, res){
-  console.log(req.body.file_name);
+    var values = req.body.file_type.split(".");
+    var fileExtension = "." + values[1];
+    console.log(fileExtension);
+    var fileName = req.body.file_name + fileExtension;
+    console.log(fileName);
+
     aws.config.update({accessKeyId: AWS_ACCESS_KEY , secretAccessKey: AWS_SECRET_KEY });
     aws.config.update({region: 'us-east-1' , signatureVersion: 'v4' });
     var s3 = new aws.S3();
     var s3_params = {
         Bucket: S3_BUCKET,
-        Key: req.body.file_name,
+        Key: fileName,
         Expires: 60,
         ContentType: req.body.file_type,
         ACL: 'public-read'
@@ -36,7 +41,7 @@ app.post('/api/sign_s3', function(req, res){
         else{
             var return_data = {
                 signed_request: data,
-                url: 'https://'+S3_BUCKET+'.s3.amazonaws.com/'+req.body.file_name
+                url: 'https://'+S3_BUCKET+'.s3.amazonaws.com/'+fileName
             };
             res.send(return_data);
             res.end();
@@ -59,13 +64,14 @@ app.put('/api/createVideo', function(req, res) {
 
 app.post('/api/updateVideo', function(req, res) {
     models.Video.find({
-        where: {videoID: req.body.videoID}})
+        where: {videoID: req.body.vidID}})
       .then(function(video) {
         if(video) {
             video.updateAttributes({
                 title: req.body.title,
                 description: req.body.description
             }).then(function(data) {
+              console.log(data);
                 res.send(data);
             }).catch(function(error) {
                 res.send('Could not update video fields');
@@ -77,4 +83,20 @@ app.post('/api/updateVideo', function(req, res) {
         res.send('Video upload corrupted.');
     });
 });
+
+
+app.get('/api/recentVideos', function(req, res) {
+    models.Video.findAll({
+     limit: 10
+   }).then(function(videos) {
+     if (videos) {
+       console.log('HELLOOO');
+       console.log(videos);
+       res.send(videos);
+     }
+   }).catch(function(error) {
+     res.send('Could not fetch most recent videos');
+   });
+});
+
 }

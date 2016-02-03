@@ -134,7 +134,7 @@ var HomeActions = (function () {
   function HomeActions() {
     _classCallCheck(this, HomeActions);
 
-    this.generateActions('getRecommendedVideosSuccess', 'getRecommendedVideosFail', 'getPopularVideosSuccess', 'getPopularVideosFail', 'getNewVideosSuccess', 'getNewVideosFail');
+    this.generateActions('getRecommendedVideosSuccess', 'getRecommendedVideosFail', 'getPopularVideosSuccess', 'getPopularVideosFail', 'getRecentVideosSuccess', 'getRecentVideosFail');
   }
 
   _createClass(HomeActions, [{
@@ -142,6 +142,22 @@ var HomeActions = (function () {
     value: function getReccomendedVideos() {
 
       this.actions.getReccomendedVideosSuccess(recvids);
+    }
+  }, {
+    key: 'getRecentVideos',
+    value: function getRecentVideos() {
+      var _this = this;
+
+      console.log('Retrieving Recent Videos');
+      $.ajax({
+        url: '/api/recentVideos',
+        type: 'GET'
+      }).done(function (data) {
+        console.log(data);
+        _this.actions.getRecentVideosSuccess(data);
+      }).fail(function () {
+        _this.actions.getRecentVideosFail();
+      });
     }
   }, {
     key: 'getPopularVideos',
@@ -324,14 +340,14 @@ var UploadActions = (function () {
         type: 'PUT',
         data: { userUUID: userUUID }
       }).done(function (data) {
-        _this.actions.uploadVideoSuccess(file);
         var vidID = data.videoID;
+        _this.actions.uploadVideoSuccess({ file: file, vidID: vidID });
         $.ajax({
           url: '/api/sign_s3',
           type: 'POST',
           data: {
             file_name: vidID,
-            file_type: file.type
+            file_type: file.name
           }
         }).done(function (response) {
           _this.actions.uploadTheVideo(file, response.signed_request);
@@ -351,7 +367,6 @@ var UploadActions = (function () {
   }, {
     key: 'uploadTheVideo',
     value: function uploadTheVideo(file, signed_request) {
-
       var xhr = new XMLHttpRequest();
       var self = this;
       xhr.open("PUT", signed_request);
@@ -372,11 +387,31 @@ var UploadActions = (function () {
           console.log("Unable to compute progress information since the total size is unknown");
         }
       };
-      /*              this.actions.updateProgress(percentComplete);
-                  }
-      */
 
       xhr.send(file);
+    }
+
+    /*
+        Function to update the video title and description based on its unique identifier .
+    */
+
+  }, {
+    key: 'uploadVideoPG',
+    value: function uploadVideoPG(payload) {
+      $.ajax({
+        url: '/api/updateVideo',
+        type: 'POST',
+        data: {
+          title: payload.title,
+          description: payload.description,
+          vidID: payload.vidID
+        }
+      }).done(function (data) {
+        console.log(data);
+        alert('Video Successfully Uploaded');
+      }).fail(function (error) {
+        alert('Error: Video Failed to Upload');
+      });
     }
   }]);
 
@@ -693,9 +728,9 @@ var Home = (function (_React$Component) {
     key: 'componentDidMount',
     value: function componentDidMount() {
       _HomeStore2.default.listen(this.onChange);
-      _HomeActions2.default.getRecommendedVideos();
-      _HomeActions2.default.getPopularVideos();
-      _HomeActions2.default.getNewVideos();
+      if (this.state.recentVids.length === 0) {
+        _HomeActions2.default.getRecentVideos();
+      }
     }
   }, {
     key: 'componentWillUnmount',
@@ -713,8 +748,8 @@ var Home = (function (_React$Component) {
       var ulStyle = {
         listStyleType: 'none'
       };
-      var recommendedVideos = this.state.recVids.map(function (video) {
-        return _react2.default.createElement(_VideoPreview2.default, { key: video.vkey, vkey: video.vkey, title: video.title, views: video.views, author: video.author });
+      var recentVideos = this.state.recentVids.map(function (video) {
+        return _react2.default.createElement(_VideoPreview2.default, { key: video.videoID, vkey: video.videoID, title: video.title, views: video.views, author: video.author });
       });
       return _react2.default.createElement(
         'div',
@@ -740,7 +775,7 @@ var Home = (function (_React$Component) {
               _react2.default.createElement(
                 'ul',
                 { className: 'pager' },
-                recommendedVideos
+                recentVideos
               )
             )
           ),
@@ -762,7 +797,7 @@ var Home = (function (_React$Component) {
               _react2.default.createElement(
                 'ul',
                 { className: 'pager' },
-                recommendedVideos
+                recentVideos
               )
             )
           ),
@@ -784,7 +819,7 @@ var Home = (function (_React$Component) {
               _react2.default.createElement(
                 'ul',
                 { className: 'pager' },
-                recommendedVideos
+                recentVideos
               )
             )
           )
@@ -1044,10 +1079,6 @@ var Navbar = (function (_React$Component) {
     key: 'componentDidMount',
     value: function componentDidMount() {
       _NavbarStore2.default.listen(this.onChange);
-      var socket = io.connect();
-      socket.on('onlineUsers', function (data) {
-        _NavbarActions2.default.updateOnlineUsers(data);
-      });
 
       $(document).ajaxStart(function () {
         _NavbarActions2.default.updateAjaxAnimation('fadeIn');
@@ -1551,6 +1582,17 @@ var Upload = (function (_React$Component) {
       _UploadActions2.default.uploadVideoS3(file, userUUID);
     }
   }, {
+    key: 'handleSubmit',
+    value: function handleSubmit(e) {
+      e.preventDefault();
+      console.log(this.state.videoID);
+      _UploadActions2.default.uploadVideoPG({
+        title: this.state.vidTitle,
+        description: this.state.vidDesc,
+        vidID: this.state.videoID
+      });
+    }
+  }, {
     key: 'render',
     value: function render() {
       var inputStyle = {
@@ -1628,7 +1670,7 @@ var Upload = (function (_React$Component) {
             { className: 'panel', id: 'upload' },
             _react2.default.createElement(
               'form',
-              { ref: 'upload' },
+              { ref: 'upload', onSubmit: this.handleSubmit.bind(this) },
               _react2.default.createElement(
                 'div',
                 { className: 'form-group' },
@@ -1708,6 +1750,7 @@ var Video = (function (_React$Component) {
   _createClass(Video, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
+      console.log('Video component did mount');
       this.checkIfVideoNeedsInstallation();
     }
   }, {
@@ -1718,18 +1761,24 @@ var Video = (function (_React$Component) {
   }, {
     key: 'checkIfVideoNeedsInstallation',
     value: function checkIfVideoNeedsInstallation() {
-      if (!this.props.src) return;
-
+      console.log('Check if video needs installation');
+      /*    if(!this.props.src)
+            return;
+      */
       this.loadVideo();
     }
   }, {
     key: 'loadVideo',
     value: function loadVideo() {
-      if (this.video || !this.props.src) return;
-
+      console.log('Loading Video');
+      /*    if(this.video || !this.props.src)
+            return;
+      */
       //    let node = React.findDOMNode(this.refs.videoPlayer);
       var node = _reactDom2.default.findDOMNode(this.refs.videoPlayer);
-      if (!node) return;
+      /*    if(!node)
+            return;
+      */
 
       this.video = document.createElement('video');
       this.video.src = this.props.src;
@@ -1952,7 +2001,9 @@ var Watch = (function (_React$Component) {
         marginLeft: 'auto',
         marginRight: 'auto'
       };
-      var vidName = 'http://videos.thisisepic.com/2b9c1bf3-e19b-4be5-9d36-246c5d3607d8/high.mp4';
+      var vidID = this.props.params;
+      var vidName = 'https://s3.amazonaws.com/testskillittv/' + vidID.vKey + '.mp4';
+      console.log(vidID);
       return _react2.default.createElement(
         'div',
         { className: 'col-md-12', style: centered },
@@ -2283,36 +2334,48 @@ var HomeStore = (function () {
     _classCallCheck(this, HomeStore);
 
     this.bindActions(_HomeActions2.default);
-    this.recVids = [{
-      vkey: '00001',
-      title: 'How To: Jump Start a Car',
-      author: 'CarExpert9',
-      views: '138,107'
-    }, {
-      vkey: '00002',
-      title: 'How To: Open a wine bottle',
-      author: 'Somal1',
-      views: '47,493'
-    }, {
-      vkey: '00003',
-      title: 'How To: Tie a tie',
-      author: 'DressForSuccess',
-      views: '104,133'
-    }, {
-      vkey: '00004',
-      title: 'How To: Do a kickflip',
-      author: 'Skrillskill',
-      views: '89,192'
-    }];
+    /*    this.recendVids = [
+          {
+            vkey: '1',
+            title: 'How To: Jump Start a Car',
+            author: 'CarExpert9',
+            views: '138,107'
+          },
+          {
+            vkey: '00002',
+            title:'How To: Open a wine bottle',
+            author: 'Somal1',
+            views: '47,493'
+          },
+          {
+            vkey: '00003',
+            title:'How To: Tie a tie',
+            author: 'DressForSuccess',
+            views: '104,133'
+          },
+          {
+            vkey: '00004',
+            title:'How To: Do a kickflip',
+            author: 'Skrillskill',
+            views: '89,192'
+          }
+        ]; */
+    this.recentVids = [];
     this.popVids = [];
-    this.newVids = [];
   }
 
   _createClass(HomeStore, [{
-    key: 'getReccomendedVideosSuccess',
-    value: function getReccomendedVideosSuccess(data) {
-      this.recVids = data;
-      print(this.recVids);
+    key: 'getRecentVideosSuccess',
+    value: function getRecentVideosSuccess(data) {
+      for (var i = 0, len = data.length; i < len; i++) {
+        this.recentVids.push({
+          videoID: data[i].videoID,
+          title: data[i].title,
+          author: data[i].description,
+          user: data[i].UserUuid
+        });
+      }
+      console.log(this.recentVids);
     }
   }, {
     key: 'getPopularVideosSuccess',
@@ -2320,9 +2383,9 @@ var HomeStore = (function () {
       this.popVids = data;
     }
   }, {
-    key: 'getNewVideosSuccess',
-    value: function getNewVideosSuccess(data) {
-      this.newVids = data;
+    key: 'getRecentVideosFail',
+    value: function getRecentVideosFail() {
+      console.log('Failed to Load Recent Videos');
     }
   }]);
 
@@ -2513,25 +2576,20 @@ var UploadStore = (function () {
     this.bindActions(_UploadActions2.default);
     this.vidTitle = "";
     this.vidDesc = "";
-    this.bones = "";
     this.file = null;
     this.uploadProgress = 0;
-    this.processing = false;
-    this.data_uri = null;
     this.fileName = null;
     this.fileType = null;
     this.signedURL = null;
+    this.videoID = null;
   }
 
   _createClass(UploadStore, [{
-    key: 'onUpdateSignedUrl',
-    value: function onUpdateSignedUrl(data) {
-      this.signedURL = data;
-    }
-  }, {
     key: 'onUploadVideoSuccess',
-    value: function onUploadVideoSuccess(data) {
-      this.file = data;
+    value: function onUploadVideoSuccess(payload) {
+      this.file = payload.file;
+      this.videoID = payload.vidID;
+      console.log(this.videoID);
     }
   }, {
     key: 'onUpdateProgress',
