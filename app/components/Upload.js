@@ -29,7 +29,8 @@ class Upload extends React.Component {
     const reader = new FileReader();
     const file = e.target.files[0];
     var userUUID = AuthStore.state.userUUID;
-    UploadActions.uploadVideoS3(file, userUUID);
+    var username = AuthStore.state.username;
+    UploadActions.uploadVideoS3(file, userUUID, username);
 
   }
 
@@ -109,7 +110,7 @@ class Upload extends React.Component {
                 <label htmlFor="username">Description</label>
                 <textarea type="text" rows="4" className="form-control" id="username" placeholder="Description" onChange={UploadActions.updateDescription}></textarea>
               </div>
-              <button className='btn btn-default'>Upload</button>
+              <button className='btn btn-default' disabled={!this.state.fileUploaded} type="submit">Upload</button>
             </form>
           </div>
         </div>

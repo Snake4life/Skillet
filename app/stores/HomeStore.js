@@ -13,7 +13,7 @@ class HomeStore {
       this.recentVids.push({
         videoID: data[i].videoID,
         title: data[i].title,
-        author: data[i].UserUuid,
+        author: data[i].author,
         views: data[i].views,
         description: data[i].description
       });

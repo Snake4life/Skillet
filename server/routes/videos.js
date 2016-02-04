@@ -50,10 +50,12 @@ app.post('/api/sign_s3', function(req, res){
 });
 
 app.put('/api/createVideo', function(req, res) {
+  console.log(req.body.username);
     models.Video.create({
         title: "Video Title",
         views: 0,
-        UserUuid: req.body.userUUID
+        UserUuid: req.body.userUUID,
+        author: req.body.username
     }).then(function(videoData) {
         res.send(videoData);
         res.end();
@@ -71,6 +73,7 @@ app.post('/api/updateVideo', function(req, res) {
                 title: req.body.title,
                 description: req.body.description
             }).then(function(data) {
+              video.updateTextIndex();
               console.log(data);
                 res.send(data);
             }).catch(function(error) {
@@ -112,6 +115,18 @@ app.get('/api/recentVideos', function(req, res) {
    }).catch(function(error) {
      res.send('Could not fetch most recent videos');
    });
+});
+
+app.get('/api/findVideo', function(req, res) {
+  console.log(req.query.name);
+  models.Video
+  .search(req.query.name)
+  .then(function(videos) {
+    console.log(videos);
+    res.send(videos);
+  }).catch(function(error) {
+    res.status(500).send({error: 'Could not fetch search results'});
+  });
 });
 
 }

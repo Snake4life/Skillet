@@ -9,9 +9,7 @@ class UploadActions {
       'uploadVideoSuccess',
       'uploadVideoFail',
       'updateProgress',
-      'updateSignedUrl',
-      'getTheFile',
-      'getSignedURL'
+      'uploadFileSuccess'
     );
     }
 
@@ -22,11 +20,14 @@ class UploadActions {
     	request.
     */
 
-    uploadVideoS3(file, userUUID) {
+    uploadVideoS3(file, userUUID, username) {
       $.ajax({
 	       url: '/api/createVideo',
 	       type: 'PUT',
-	       data: {userUUID: userUUID}
+	       data: {
+           userUUID: userUUID,
+           username: username
+         }
         }).done((data) => {
           var vidID = data.videoID;
           this.actions.uploadVideoSuccess({file: file, vidID: vidID});
@@ -59,6 +60,7 @@ class UploadActions {
               xhr.onload = function() {
                   if (xhr.status === 200) {
                       console.log("file uploaded successfully!");
+                      self.actions.uploadFileSuccess();
                   }
               };
               xhr.onerror = function() {

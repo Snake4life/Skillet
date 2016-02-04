@@ -67,6 +67,7 @@ app.use(function(req, res) {
 
 var server = require('http').createServer(app);
 models.sequelize.sync().then(function () {
+  //models.Video.addFullTextIndex();
   server.listen(app.get('port'), function() {
     console.log('Express server listening on port ' + app.get('port'));
   });

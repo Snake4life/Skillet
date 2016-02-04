@@ -27,7 +27,7 @@ class Login extends React.Component {
           <h1 className="logo" style={centerTitle}><a href="https://www.heroku.com" title="Heroku">Skillit.tv</a></h1>
           <div className="content">
               <div className="panel" id="login">
-                  <h3>Log in to your account</h3>
+                  <h3 style={centerTitle}>Log in to your account</h3>
                   <form onSubmit={this.handleSubmit.bind(this)} ref="loginForm" role="form">
                     <div className="alert alert-danger hidden" ref="alert">There was a problem with your login.</div>
                       <div className="form-group">

@@ -12,7 +12,7 @@ import Profile from './components/Profile';
 export default (
   <Route component={App}>
     <Route path='/' component={Home}/>
-          <Route path='/user/:profile' component={Profile} />
+      <Route path='/user/:profile' component={Profile} />
       <Route path='/watch/:vKey' component={Watch} />
       <Route path='/upload' component={Upload} />
       <Route path='/login' component={Login} />

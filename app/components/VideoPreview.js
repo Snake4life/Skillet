@@ -15,6 +15,7 @@ class VideoPreview extends React.Component {
       height: '310px'
     }
     var vKey = '/watch/' + this.props.vkey;
+    var userLink = '/user/' + this.props.author;
     return (
       <li key={this.props.key} style={listyle}>
       <Link to={vKey}>
@@ -23,7 +24,7 @@ class VideoPreview extends React.Component {
         <img src="./img/videoplaceholder.png" alt=""/>
         <div class="caption">
           <h3>{this.props.title}</h3>
-          <p>by {this.props.author}</p>
+          <p>{this.props.author}</p>
           <p>{this.props.views} views</p>
         </div>
         </div>

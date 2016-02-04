@@ -29,6 +29,9 @@ section,
 summary {
   display: block;
 }
+footer {
+  margin-top: -50px;
+}
 audio,
 canvas,
 progress,
@@ -8293,10 +8296,11 @@ p,h2,h3 {
 
 h2,h3 {
     page-break-after: avoid;
-    text-align: center;
+    text-align: left;
 }
 form h3 {
   align: center;
+
 }
 
 .dropdown-menu {

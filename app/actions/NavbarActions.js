@@ -9,20 +9,21 @@ class NavbarActions {
       'updateSearchQuery',
       'getCharacterCountSuccess',
       'getCharacterCountFail',
-      'findCharacterSuccess',
-      'findCharacterFail',
+      'findVideoSuccess',
+      'findVideoFail',
       'autoLogAttempt'
     );
   }
 
-  findCharacter(payload) {
+  findVideo(payload) {
     $.ajax({
-      url: '/api/characters/search',
+      url: '/api/findVideo',
+      type: 'GET',
       data: { name: payload.searchQuery }
     })
       .done((data) => {
         assign(payload, data);
-        this.actions.findCharacterSuccess(payload);
+        this.actions.findVideoSuccess(payload);
       })
       .fail(() => {
         this.actions.findCharacterFail(payload);

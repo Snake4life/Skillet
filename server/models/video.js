@@ -17,6 +17,10 @@ module.exports = function(sequelize, DataTypes) {
 			allowNull: false
 		},
 		description: DataTypes.STRING,
+		author: {
+			type: DataTypes.STRING,
+			allowNull: false
+		}
 	}, {
 		classMethods: {
 			associate: function(models) {
@@ -33,27 +37,35 @@ module.exports = function(sequelize, DataTypes) {
 				var vectorName = Video.getSearchVector();
 				sequelize
 					.query('ALTER TABLE "' + Video.tableName + '" ADD COLUMN "' + vectorName + '" TSVECTOR')
-					.success(function() {
+					.then(function() {
 						return sequelize
 									.query('UPDATE "' + Video.tableName + '" SET "' + vectorName + '" = to_tsvector(\'english\', ' + searchFields.join(' || \' \' || ') + ')')
 									.error(console.log);
-						}).success(function() {
+						}).then(function() {
 							return sequelize
-	                                .query('CREATE INDEX post_search_idx ON "' + Post.tableName + '" USING gin("' + vectorName + '");')
+	                                .query('CREATE INDEX video_search_idx ON "' + Video.tableName + '" USING gin("' + vectorName + '");')
                                		.error(console.log);
-                   		 }).success(function() {
+                   		 }).then(function() {
                         	return sequelize
-                                	.query('CREATE TRIGGER post_vector_update BEFORE INSERT OR UPDATE ON "' + Post.tableName + '" FOR EACH ROW EXECUTE PROCEDURE tsvector_update_trigger("' + vectorName + '", \'pg_catalog.english\', ' + searchFields.join(', ') + ')')
+                                	.query('CREATE TRIGGER video_vector_update BEFORE INSERT OR UPDATE ON "' + Video.tableName + '" FOR EACH ROW EXECUTE PROCEDURE tsvector_update_trigger("' + vectorName + '", \'pg_catalog.english\', ' + searchFields.join(', ') + ')')
                                 	.error(console.log);
                     	}).error(console.log);
 			},
-
+			updateTextIndex: function() {
+				var Video = this;
+				var searchFields = ['title', 'description'];
+				var vectorName = 'VideoText';
+				sequelize
+				.query('UPDATE "' + Video.tableName + '" SET "' + vectorName + '" = to_tsvector(\'english\', ' + searchFields.join(' || \' \' || ') + ')')
+				.then(function() {
+					return "Converted to search ector"
+				}).error(console.log);
+			},
 			search: function(query) {
 				var Video = this;
 				query = sequelize.getQueryInterface().escape(query);
-
 				return sequelize
-							.query('SELECT * FROM "' + Post.tableName + '" WHERE "' + Post.getSearchVector() + '" @@ plainto_tsquery(\'english\', ' + query + ')', Post);
+							.query('SELECT * FROM "' + Video.tableName + '" WHERE "' + Video.getSearchVector() + '" @@ plainto_tsquery(\'english\', ' + query + ')', Video);
 			}
 		}
 	});

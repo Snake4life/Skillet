@@ -47,7 +47,7 @@ class Navbar extends React.Component {
     let searchQuery = this.state.searchQuery.trim();
 
     if (searchQuery) {
-      NavbarActions.findCharacter({
+      NavbarActions.findVideo({
         searchQuery: searchQuery,
         searchForm: this.refs.searchForm.getDOMNode(),
         router: this.context.router
@@ -60,6 +60,7 @@ class Navbar extends React.Component {
       paddingTop: '3px',
       paddingBottom: '5px'
     };
+    var profileLink = "/user/" + AuthStore.state.username;
     var yourimg = (
       <img src="../img/profileImage.png" height="27" width="27"></img>
     );
@@ -72,7 +73,7 @@ class Navbar extends React.Component {
             </button></Link>
             </li>
         <NavDropdown eventKey={3} title={yourimg} id="basic-nav-dropdown" onClick={this.userNameClick}>
-          <MenuItem eventKey="1">View Profile</MenuItem>
+          <MenuItem eventKey="1"><Link to={profileLink}>View Your Pofile</Link></MenuItem>
           <MenuItem eventKey="2">Likes</MenuItem>
           <MenuItem eventKey="3">Playlists</MenuItem>
           <MenuItem divider />

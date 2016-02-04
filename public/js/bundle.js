@@ -209,20 +209,21 @@ var NavbarActions = (function () {
   function NavbarActions() {
     _classCallCheck(this, NavbarActions);
 
-    this.generateActions('updateOnlineUsers', 'updateAjaxAnimation', 'updateSearchQuery', 'getCharacterCountSuccess', 'getCharacterCountFail', 'findCharacterSuccess', 'findCharacterFail', 'autoLogAttempt');
+    this.generateActions('updateOnlineUsers', 'updateAjaxAnimation', 'updateSearchQuery', 'getCharacterCountSuccess', 'getCharacterCountFail', 'findVideoSuccess', 'findVideoFail', 'autoLogAttempt');
   }
 
   _createClass(NavbarActions, [{
-    key: 'findCharacter',
-    value: function findCharacter(payload) {
+    key: 'findVideo',
+    value: function findVideo(payload) {
       var _this = this;
 
       $.ajax({
-        url: '/api/characters/search',
+        url: '/api/findVideo',
+        type: 'GET',
         data: { name: payload.searchQuery }
       }).done(function (data) {
         (0, _underscore.assign)(payload, data);
-        _this.actions.findCharacterSuccess(payload);
+        _this.actions.findVideoSuccess(payload);
       }).fail(function () {
         _this.actions.findCharacterFail(payload);
       });
@@ -373,7 +374,7 @@ var UploadActions = (function () {
   function UploadActions() {
     _classCallCheck(this, UploadActions);
 
-    this.generateActions('updateTitle', 'updateDescription', 'uploadVideoSuccess', 'uploadVideoFail', 'updateProgress', 'updateSignedUrl', 'getTheFile', 'getSignedURL');
+    this.generateActions('updateTitle', 'updateDescription', 'uploadVideoSuccess', 'uploadVideoFail', 'updateProgress', 'uploadFileSuccess');
   }
 
   /*
@@ -384,13 +385,16 @@ var UploadActions = (function () {
 
   _createClass(UploadActions, [{
     key: 'uploadVideoS3',
-    value: function uploadVideoS3(file, userUUID) {
+    value: function uploadVideoS3(file, userUUID, username) {
       var _this = this;
 
       $.ajax({
         url: '/api/createVideo',
         type: 'PUT',
-        data: { userUUID: userUUID }
+        data: {
+          userUUID: userUUID,
+          username: username
+        }
       }).done(function (data) {
         var vidID = data.videoID;
         _this.actions.uploadVideoSuccess({ file: file, vidID: vidID });
@@ -426,6 +430,7 @@ var UploadActions = (function () {
       xhr.onload = function () {
         if (xhr.status === 200) {
           console.log("file uploaded successfully!");
+          self.actions.uploadFileSuccess();
         }
       };
       xhr.onerror = function () {
@@ -809,7 +814,8 @@ var Home = (function (_React$Component) {
     key: 'render',
     value: function render() {
       var ulStyle = {
-        listStyleType: 'none'
+        listStyleType: 'none',
+        paddingBottom: '100px'
       };
       var recentVideos = this.state.recentVids.map(function (video) {
         return _react2.default.createElement(_VideoPreview2.default, { key: video.videoID, vkey: video.videoID, title: video.title, views: video.views, author: video.author });
@@ -833,28 +839,6 @@ var Home = (function (_React$Component) {
                   'h3',
                   null,
                   'Featured'
-                )
-              ),
-              _react2.default.createElement(
-                'ul',
-                { className: 'pager' },
-                recentVideos
-              )
-            )
-          ),
-          _react2.default.createElement(
-            'li',
-            null,
-            _react2.default.createElement(
-              'div',
-              { className: 'col-md-12 col-centered' },
-              _react2.default.createElement(
-                'div',
-                { className: 'page-header' },
-                _react2.default.createElement(
-                  'h3',
-                  null,
-                  'New'
                 )
               ),
               _react2.default.createElement(
@@ -977,7 +961,7 @@ var Login = (function (_React$Component) {
             { className: 'panel', id: 'login' },
             _react2.default.createElement(
               'h3',
-              null,
+              { style: centerTitle },
               'Log in to your account'
             ),
             _react2.default.createElement(
@@ -1177,7 +1161,7 @@ var Navbar = (function (_React$Component) {
       var searchQuery = this.state.searchQuery.trim();
 
       if (searchQuery) {
-        _NavbarActions2.default.findCharacter({
+        _NavbarActions2.default.findVideo({
           searchQuery: searchQuery,
           searchForm: this.refs.searchForm.getDOMNode(),
           router: this.context.router
@@ -1191,6 +1175,7 @@ var Navbar = (function (_React$Component) {
         paddingTop: '3px',
         paddingBottom: '5px'
       };
+      var profileLink = "/user/" + _AuthStore2.default.state.username;
       var yourimg = _react2.default.createElement('img', { src: '../img/profileImage.png', height: '27', width: '27' });
       if (_AuthStore2.default.state._user) {
         var loginList = _react2.default.createElement(
@@ -1216,7 +1201,11 @@ var Navbar = (function (_React$Component) {
             _react2.default.createElement(
               _reactBootstrap.MenuItem,
               { eventKey: '1' },
-              'View Profile'
+              _react2.default.createElement(
+                _reactRouter.Link,
+                { to: profileLink },
+                'View Your Pofile'
+              )
             ),
             _react2.default.createElement(
               _reactBootstrap.MenuItem,
@@ -1745,7 +1734,8 @@ var Upload = (function (_React$Component) {
       var reader = new FileReader();
       var file = e.target.files[0];
       var userUUID = _AuthStore2.default.state.userUUID;
-      _UploadActions2.default.uploadVideoS3(file, userUUID);
+      var username = _AuthStore2.default.state.username;
+      _UploadActions2.default.uploadVideoS3(file, userUUID, username);
     }
   }, {
     key: 'handleSubmit',
@@ -1864,7 +1854,7 @@ var Upload = (function (_React$Component) {
               ),
               _react2.default.createElement(
                 'button',
-                { className: 'btn btn-default' },
+                { className: 'btn btn-default', disabled: !this.state.fileUploaded, type: 'submit' },
                 'Upload'
               )
             )
@@ -2043,6 +2033,7 @@ var VideoPreview = (function (_React$Component) {
         height: '310px'
       };
       var vKey = '/watch/' + this.props.vkey;
+      var userLink = '/user/' + this.props.author;
       return _react2.default.createElement(
         'li',
         { key: this.props.key, style: listyle },
@@ -2067,7 +2058,6 @@ var VideoPreview = (function (_React$Component) {
                 _react2.default.createElement(
                   'p',
                   null,
-                  'by ',
                   this.props.author
                 ),
                 _react2.default.createElement(
@@ -2489,7 +2479,7 @@ var HomeStore = (function () {
         this.recentVids.push({
           videoID: data[i].videoID,
           title: data[i].title,
-          author: data[i].UserUuid,
+          author: data[i].author,
           views: data[i].views,
           description: data[i].description
         });
@@ -2546,13 +2536,20 @@ var NavbarStore = (function () {
   }
 
   _createClass(NavbarStore, [{
-    key: 'onFindCharacterSuccess',
-    value: function onFindCharacterSuccess(payload) {
-      payload.history.pushState(null, '/characters/' + payload.characterId);
+    key: 'onFindVideoSuccess',
+    value: function onFindVideoSuccess(payload) {
+      var results = payload[0];
+      console.log(results);
+      for (var i = 0, len = results.length; i < len; i++) {
+        console.log(results[i].title);
+        console.log(results[i]);
+      }
+
+      payload.history.pushState(null, '/search/' + payload.characterId);
     }
   }, {
-    key: 'onFindCharacterFail',
-    value: function onFindCharacterFail(payload) {
+    key: 'onFindVideoFail',
+    value: function onFindVideoFail(payload) {
       payload.searchForm.classList.add('shake');
       setTimeout(function () {
         payload.searchForm.classList.remove('shake');
@@ -2749,11 +2746,16 @@ var UploadStore = (function () {
     this.uploadProgress = 0;
     this.fileName = null;
     this.fileType = null;
-    this.signedURL = null;
     this.videoID = null;
+    this.fileUploaded = false;
   }
 
   _createClass(UploadStore, [{
+    key: 'onUploadFileSuccess',
+    value: function onUploadFileSuccess() {
+      this.fileUploaded = true;
+    }
+  }, {
     key: 'onUploadVideoSuccess',
     value: function onUploadVideoSuccess(payload) {
       this.file = payload.file;

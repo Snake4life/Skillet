@@ -26,7 +26,8 @@ class Home extends React.Component {
   }
   render() {
     var ulStyle = {
-      listStyleType: 'none'
+      listStyleType: 'none',
+      paddingBottom: '100px'
     }
     let recentVideos = this.state.recentVids.map((video) => {
       return (
@@ -60,18 +61,7 @@ class Home extends React.Component {
 
           </div>
         </li>
-        <li>
-          <div className="col-md-12 col-centered">
-            <div className='page-header'>
-              <h3>New</h3>
-              </div>
 
-            <ul className='pager'>
-              {recentVideos}
-            </ul>
-
-          </div>
-        </li>
       </ul>
       </div>
     );

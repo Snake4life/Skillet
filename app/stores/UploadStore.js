@@ -10,10 +10,13 @@ class UploadStore {
     this.uploadProgress = 0;
     this.fileName = null;
     this.fileType = null;
-    this.signedURL = null;
     this.videoID = null;
+    this.fileUploaded = false;
   }
 
+  onUploadFileSuccess() {
+    this.fileUploaded = true;
+  }
   onUploadVideoSuccess(payload) {
     this.file = payload.file;
     this.videoID = payload.vidID;
