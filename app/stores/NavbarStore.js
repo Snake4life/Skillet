@@ -12,13 +12,11 @@ class NavbarStore {
 
   onFindVideoSuccess(payload) {
     var results = payload[0]
-    console.log(results);
     for (var i =0, len=results.length; i<len; i++) {
       console.log(results[i].title);
       console.log(results[i]);
     }
-
-    payload.history.pushState(null, '/search/' + payload.characterId);
+    payload.history.pushState(null, '/search/', {results});
   }
 
   onFindVideoFail(payload) {

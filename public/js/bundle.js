@@ -1164,7 +1164,7 @@ var Navbar = (function (_React$Component) {
         _NavbarActions2.default.findVideo({
           searchQuery: searchQuery,
           searchForm: this.refs.searchForm.getDOMNode(),
-          router: this.context.router
+          history: this.props.history
         });
       }
     }
@@ -2539,13 +2539,11 @@ var NavbarStore = (function () {
     key: 'onFindVideoSuccess',
     value: function onFindVideoSuccess(payload) {
       var results = payload[0];
-      console.log(results);
       for (var i = 0, len = results.length; i < len; i++) {
         console.log(results[i].title);
         console.log(results[i]);
       }
-
-      payload.history.pushState(null, '/search/' + payload.characterId);
+      payload.history.pushState(null, '/search/', { results: results });
     }
   }, {
     key: 'onFindVideoFail',

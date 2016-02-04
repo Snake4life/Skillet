@@ -1,5 +1,5 @@
 import React from 'react';
-import {Link} from 'react-router';
+import {Link, History} from 'react-router';
 import NavbarStore from '../stores/NavbarStore';
 import NavbarActions from '../actions/NavbarActions';
 import AuthStore from '../stores/AuthStore';
@@ -50,7 +50,7 @@ class Navbar extends React.Component {
       NavbarActions.findVideo({
         searchQuery: searchQuery,
         searchForm: this.refs.searchForm.getDOMNode(),
-        router: this.context.router
+        history: this.props.history
       });
     }
   }
