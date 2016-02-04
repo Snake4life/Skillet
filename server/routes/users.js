@@ -57,4 +57,24 @@ module.exports = function(app) {
         res.send(user);
       });
   });
+
+
+  app.get('/api/getUser', function(req, res) {
+    var params = req.query;
+    console.log(params);
+    models.User.find({
+      where: {
+        name: params.username
+      }
+    }).then(function(user) {
+      console.log(user);
+      if(user) {
+        res.send(user);
+      } else {
+        res.status(500).send({error: 'Could not get user'});  
+      }
+    }).catch(function(error) {
+      res.status(500).send({error: 'Could not get user'});
+    });
+  });
 }

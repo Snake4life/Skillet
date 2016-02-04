@@ -33,7 +33,7 @@ class Watch extends React.Component {
       marginLeft: 'auto',
       marginRight: 'auto',
     };
-    var vidID = this.props.params
+    var vidID = this.props.params;
     var vidName = 'https://s3.amazonaws.com/testskillittv/' + vidID.vKey + '.mp4';
     var poster = vidName.replace(/.mp4/, '.jpg');
     return (

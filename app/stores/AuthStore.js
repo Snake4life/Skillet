@@ -12,6 +12,7 @@ class AuthStore {
     this.emailAttempt = '';
     this.passwordAttempt = '';
     this.failedAttempt = false;
+    this.username = null;
   }
 
   onUpdateEmailAttempt(event) {
@@ -25,7 +26,8 @@ class AuthStore {
   onAutoLoginSuccess(data) {
     this._jwt = data.token;
     this._user = jwt_decode(data.token);
-    this.userUUID = this._user.uuid
+    this.userUUID = this._user.uuid;
+    this.username = this._user.name;
   }
 
   onLoginUserSuccess(data) {

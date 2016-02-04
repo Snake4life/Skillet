@@ -7,10 +7,12 @@ import Upload from './components/Upload';
 import Login from './components/Login';
 import Signup from './components/Signup';
 import Logout from './components/Logout';
+import Profile from './components/Profile';
 
 export default (
   <Route component={App}>
     <Route path='/' component={Home}/>
+          <Route path=':profile' component={Profile} />
       <Route path='/watch/:vKey' component={Watch} />
       <Route path='/upload' component={Upload} />
       <Route path='/login' component={Login} />

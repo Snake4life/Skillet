@@ -32,10 +32,10 @@ class AuthActions {
       })
       .done((data) => {
         console.log(data);
-        this.actions.loginUserSuccess(data)
+        this.actions.loginUserSuccess(data);
       })
       .fail((jqXhr) => {
-        this.actions.loginUserFail(payload)
+        this.actions.loginUserFail(payload);
       });
     }
 
