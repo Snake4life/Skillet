@@ -485,6 +485,8 @@ var _alt = require('../alt');
 
 var _alt2 = _interopRequireDefault(_alt);
 
+var _underscore = require('underscore');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -498,19 +500,21 @@ var WatchActions = (function () {
 
   _createClass(WatchActions, [{
     key: 'getVideoInfo',
-    value: function getVideoInfo(vKey) {
+    value: function getVideoInfo(vkey) {
       var _this = this;
 
+      console.log('buns');
+      console.log(vkey.vKey);
       $.ajax({
         url: '/api/getVideo',
         type: 'GET',
         data: {
-          vkey: vKey.vKey
+          vkey: vkey.vKey
         }
       }).done(function (data) {
-        _this.actions.getVideoInfoSuccess(vKey);
+        _this.actions.getVideoInfoSuccess(data);
       }).fail(function (error) {
-        _this.actions.getVideoInfoFail();
+        _this.actions.getVideoInfoFail(error);
       });
     }
   }]);
@@ -520,7 +524,7 @@ var WatchActions = (function () {
 
 exports.default = _alt2.default.createActions(WatchActions);
 
-},{"../alt":9}],9:[function(require,module,exports){
+},{"../alt":9,"underscore":"underscore"}],9:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1912,7 +1916,6 @@ var Video = (function (_React$Component) {
   _createClass(Video, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
-      console.log('Video component did mount');
       this.checkIfVideoNeedsInstallation();
     }
   }, {
@@ -1923,24 +1926,17 @@ var Video = (function (_React$Component) {
   }, {
     key: 'checkIfVideoNeedsInstallation',
     value: function checkIfVideoNeedsInstallation() {
-      console.log('Check if video needs installation');
-      /*    if(!this.props.src)
-            return;
-      */
+      if (!this.props.src) return;
+
       this.loadVideo();
     }
   }, {
     key: 'loadVideo',
     value: function loadVideo() {
-      console.log('Loading Video');
-      /*    if(this.video || !this.props.src)
-            return;
-      */
-      //    let node = React.findDOMNode(this.refs.videoPlayer);
+      if (this.video || !this.props.src) return;
+
       var node = _reactDom2.default.findDOMNode(this.refs.videoPlayer);
-      /*    if(!node)
-            return;
-      */
+      if (!node) return;
 
       this.video = document.createElement('video');
       this.video.src = this.props.src;
@@ -1954,9 +1950,9 @@ var Video = (function (_React$Component) {
         id: 'videoPlayer',
         adTagUrl: 'http://pubads.g.doubleclick.net/gampad/ads?sz=640x480&' + 'iu=/124319096/external/ad_rule_samples&ciu_szs=300x250&ad_rule=1&' + 'impl=s&gdfp_req=1&env=vp&output=xml_vmap1&unviewed_position_start=1&' + 'cust_params=sample_ar%3Dpremidpostpod%26deployment%3Dgmf-js&cmsid=496&' + 'vid=short_onecue&correlator='
       };
-      player.ima(options);
+      //player.ima(options);
 
-      player.ima.requestAds();
+      //player.ima.requestAds();
       // On mobile devices, you must call initializeAdDisplayContainer as the result
       // of a user action (e.g. button click). If you do not make this call, the SDK
       // will make it for you, but not as the result of a user action. For more info
@@ -2136,9 +2132,6 @@ var Watch = (function (_React$Component) {
 
     _this.state = _WatchStore2.default.getState();
     _this.onChange = _this.onChange.bind(_this);
-    var vKey = _this.props.params;
-    console.log(vKey);
-    _WatchActions2.default.getVideoInfo(vKey);
     return _this;
   }
 
@@ -2146,6 +2139,9 @@ var Watch = (function (_React$Component) {
     key: 'componentDidMount',
     value: function componentDidMount() {
       _WatchStore2.default.listen(this.onChange);
+      console.log('Hello');
+      console.log(this.props.params);
+      _WatchActions2.default.getVideoInfo(this.props.params);
     }
   }, {
     key: 'componentWillUnmount',

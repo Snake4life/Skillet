@@ -1,4 +1,5 @@
 import alt from '../alt';
+import {assign} from 'underscore';
 
 class WatchActions {
   constructor() {
@@ -8,17 +9,19 @@ class WatchActions {
     );
     }
 
-  getVideoInfo(vKey) {
+  getVideoInfo(vkey) {
+    console.log('buns');
+    console.log(vkey.vKey);
     $.ajax({
       url: '/api/getVideo',
       type: 'GET',
       data: {
-        vkey: vKey.vKey
+        vkey: vkey.vKey
       }
     }).done((data) => {
-      this.actions.getVideoInfoSuccess(vKey);
+      this.actions.getVideoInfoSuccess(data);
     }).fail((error) => {
-    this.actions.getVideoInfoFail();
+    this.actions.getVideoInfoFail(error);
   });
 }
   }

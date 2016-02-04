@@ -9,12 +9,13 @@ class Watch extends React.Component {
     super(props);
     this.state = WatchStore.getState();
     this.onChange = this.onChange.bind(this);
-    var vKey = this.props.params;
-    console.log(vKey);
-    WatchActions.getVideoInfo(vKey);
   }
+
   componentDidMount() {
     WatchStore.listen(this.onChange);
+    console.log('Hello');
+    console.log(this.props.params);
+    WatchActions.getVideoInfo(this.props.params);
   }
 
   componentWillUnmount() {

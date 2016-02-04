@@ -5,6 +5,10 @@ var models  = require('../models');
 
 
 
+var AWS_ACCESS_KEY = process.env.AWS_ACCESS_KEY_ID;
+var AWS_SECRET_KEY = process.env.AWS_SECRET_ACCESS_KEY;
+var S3_BUCKET = process.env.S3_BUCKET_NAME;
+
 
 
 module.exports = function(app) {
@@ -80,11 +84,12 @@ app.post('/api/updateVideo', function(req, res) {
     });
 });
 
-app.get('api/getVideo', function(req, res) {
+app.get('/api/getVideo', function(req, res) {
     var params = req.query;
+    console.log(params.vkey);
     models.Video.find({
       where: {
-        videoID: params.vidKey
+        videoID: params.vkey
     }}).then(function(video) {
       if (video){
         res.send(video);

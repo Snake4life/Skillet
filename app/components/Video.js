@@ -6,7 +6,6 @@ class Video extends React.Component {
 
 
   componentDidMount() {
-    console.log('Video component did mount');
     this.checkIfVideoNeedsInstallation();
   }
 
@@ -15,23 +14,21 @@ class Video extends React.Component {
   }
 
   checkIfVideoNeedsInstallation() {
-    console.log('Check if video needs installation');
-/*    if(!this.props.src)
+    if(!this.props.src)
       return;
-*/
+
     this.loadVideo();
   }
 
   loadVideo() {
-    console.log('Loading Video');
-/*    if(this.video || !this.props.src)
+    if(this.video || !this.props.src)
       return;
-*/
-//    let node = React.findDOMNode(this.refs.videoPlayer);
+
+
     let node = ReactDOM.findDOMNode(this.refs.videoPlayer);
-/*    if(!node)
+    if(!node)
       return;
-*/
+
 
     this.video = document.createElement('video');
     this.video.src = this.props.src;
@@ -49,9 +46,9 @@ class Video extends React.Component {
       'cust_params=sample_ar%3Dpremidpostpod%26deployment%3Dgmf-js&cmsid=496&' +
       'vid=short_onecue&correlator='
     };
-    player.ima(options);
+    //player.ima(options);
 
-    player.ima.requestAds();
+    //player.ima.requestAds();
 // On mobile devices, you must call initializeAdDisplayContainer as the result
 // of a user action (e.g. button click). If you do not make this call, the SDK
 // will make it for you, but not as the result of a user action. For more info
