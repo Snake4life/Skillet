@@ -2292,7 +2292,7 @@ exports.default = _react2.default.createElement(
   _reactRouter.Route,
   { component: _App2.default },
   _react2.default.createElement(_reactRouter.Route, { path: '/', component: _Home2.default }),
-  _react2.default.createElement(_reactRouter.Route, { path: ':profile', component: _Profile2.default }),
+  _react2.default.createElement(_reactRouter.Route, { path: '/user/:profile', component: _Profile2.default }),
   _react2.default.createElement(_reactRouter.Route, { path: '/watch/:vKey', component: _Watch2.default }),
   _react2.default.createElement(_reactRouter.Route, { path: '/upload', component: _Upload2.default }),
   _react2.default.createElement(_reactRouter.Route, { path: '/login', component: _Login2.default }),
