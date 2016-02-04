@@ -9,11 +9,17 @@ class WatchActions {
     }
 
   getVideoInfo(vKey) {
-    if(vKey) {
-    this.actions.getVideoInfoSuccess(vKey);
-  } else {
+    $.ajax({
+      url: '/api/getVideo',
+      type: 'GET',
+      data: {
+        vkey: vKey.vKey
+      }
+    }).done((data) => {
+      this.actions.getVideoInfoSuccess(vKey);
+    }).fail((error) => {
     this.actions.getVideoInfoFail();
-  }
+  });
 }
   }
 

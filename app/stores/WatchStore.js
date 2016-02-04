@@ -14,13 +14,10 @@ class WatchStore {
   }
 
   onGetVideoInfoSuccess(data) {
-    this.video['title'] = 'How To: Jump Start a Car';
-    this.video['author'] = 'CarExpert9';
-    this.video['description'] =  'Jump start a Car. Anyone who drives should know how to safely jump start' +
-                    'their car because one day your battery will be dead. Whether you left your' +
-                    'lights on or your battery goes bad, knowing how to jump your car safely' +
-                    'and properly will keep you from getting stranded. '
-    this.video['views'] = '138,107';
+    this.video['title'] = data.title;
+    this.video['author'] = data.UserUuid;
+    this.video['description'] =  data.description;
+    this.video['views'] = data.views;
   }
 
   onGetVideoInfoFail() {

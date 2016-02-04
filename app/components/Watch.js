@@ -33,32 +33,27 @@ class Watch extends React.Component {
       marginLeft: 'auto',
       marginRight: 'auto',
     };
+    var videoDiv = {
+      marginLeft: '150px',
+      marginRight: '50px',
+      width: '660px'
+    };
+    var centerText = {
+      textAlign: 'left'
+    };
     var vidID = this.props.params;
     var vidName = 'https://s3.amazonaws.com/testskillittv/' + vidID.vKey + '.mp4';
     var poster = vidName.replace(/.mp4/, '.jpg');
     return (
-      <div className="col-md-12" style={centered}>
-        <div style={centered}>
-      <h3>{this.state.video['title']}</h3>
-      <p>{this.state.video['views'] + ' views'}</p>
       <div className="row">
-              <div className="col-md-6">
-      <Video src={vidName} poster={poster} />
-    </div>
-
-
-  <div className="col-sm-4 col-md-4">
-    <div className="thumbnail">
-      <img src="../img/profileImage.png" alt="" width="100" height="100" />
-      <div className="caption">
-        <h3>{this.state.video['author']}</h3>
-        <p>{this.state.video['description']}</p>
-      </div>
-    </div>
-  </div>
-  </div>
+        <div style={videoDiv}>
+          <h1 style={centerText}>{this.state.video['title']}</h1>
+          <h3 style={centerText}>{this.state.video['views'] + ' views'}</h3>
+          <Video src={vidName} poster={poster} />
 </div>
 </div>
+
+
     );
   }
 

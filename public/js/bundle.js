@@ -499,11 +499,19 @@ var WatchActions = (function () {
   _createClass(WatchActions, [{
     key: 'getVideoInfo',
     value: function getVideoInfo(vKey) {
-      if (vKey) {
-        this.actions.getVideoInfoSuccess(vKey);
-      } else {
-        this.actions.getVideoInfoFail();
-      }
+      var _this = this;
+
+      $.ajax({
+        url: '/api/getVideo',
+        type: 'GET',
+        data: {
+          vkey: vKey.vKey
+        }
+      }).done(function (data) {
+        _this.actions.getVideoInfoSuccess(vKey);
+      }).fail(function (error) {
+        _this.actions.getVideoInfoFail();
+      });
     }
   }]);
 
@@ -2157,57 +2165,34 @@ var Watch = (function (_React$Component) {
         marginLeft: 'auto',
         marginRight: 'auto'
       };
+      var videoDiv = {
+        marginLeft: '150px',
+        marginRight: '50px',
+        width: '660px'
+      };
+      var centerText = {
+        textAlign: 'left'
+      };
       var vidID = this.props.params;
       var vidName = 'https://s3.amazonaws.com/testskillittv/' + vidID.vKey + '.mp4';
       var poster = vidName.replace(/.mp4/, '.jpg');
       return _react2.default.createElement(
         'div',
-        { className: 'col-md-12', style: centered },
+        { className: 'row' },
         _react2.default.createElement(
           'div',
-          { style: centered },
+          { style: videoDiv },
           _react2.default.createElement(
-            'h3',
-            null,
+            'h1',
+            { style: centerText },
             this.state.video['title']
           ),
           _react2.default.createElement(
-            'p',
-            null,
+            'h3',
+            { style: centerText },
             this.state.video['views'] + ' views'
           ),
-          _react2.default.createElement(
-            'div',
-            { className: 'row' },
-            _react2.default.createElement(
-              'div',
-              { className: 'col-md-6' },
-              _react2.default.createElement(_Video2.default, { src: vidName, poster: poster })
-            ),
-            _react2.default.createElement(
-              'div',
-              { className: 'col-sm-4 col-md-4' },
-              _react2.default.createElement(
-                'div',
-                { className: 'thumbnail' },
-                _react2.default.createElement('img', { src: '../img/profileImage.png', alt: '', width: '100', height: '100' }),
-                _react2.default.createElement(
-                  'div',
-                  { className: 'caption' },
-                  _react2.default.createElement(
-                    'h3',
-                    null,
-                    this.state.video['author']
-                  ),
-                  _react2.default.createElement(
-                    'p',
-                    null,
-                    this.state.video['description']
-                  )
-                )
-              )
-            )
-          )
+          _react2.default.createElement(_Video2.default, { src: vidName, poster: poster })
         )
       );
     }
@@ -2856,10 +2841,10 @@ var WatchStore = (function () {
   _createClass(WatchStore, [{
     key: 'onGetVideoInfoSuccess',
     value: function onGetVideoInfoSuccess(data) {
-      this.video['title'] = 'How To: Jump Start a Car';
-      this.video['author'] = 'CarExpert9';
-      this.video['description'] = 'Jump start a Car. Anyone who drives should know how to safely jump start' + 'their car because one day your battery will be dead. Whether you left your' + 'lights on or your battery goes bad, knowing how to jump your car safely' + 'and properly will keep you from getting stranded. ';
-      this.video['views'] = '138,107';
+      this.video['title'] = data.title;
+      this.video['author'] = data.UserUuid;
+      this.video['description'] = data.description;
+      this.video['views'] = data.views;
     }
   }, {
     key: 'onGetVideoInfoFail',

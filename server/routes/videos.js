@@ -5,10 +5,6 @@ var models  = require('../models');
 
 
 
-var AWS_ACCESS_KEY = process.env.AWS_ACCESS_KEY_ID || "AKIAIN27PH4D3K6MEBZA";
-var AWS_SECRET_KEY = process.env.AWS_SECRET_ACCESS_KEY || "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";
-var S3_BUCKET = process.env.S3_BUCKET_NAME || "testskillittv";
-
 
 
 module.exports = function(app) {
@@ -81,6 +77,20 @@ app.post('/api/updateVideo', function(req, res) {
         }
     }).catch(function(error) {
         res.send('Video upload corrupted.');
+    });
+});
+
+app.get('api/getVideo', function(req, res) {
+    var params = req.query;
+    models.Video.find({
+      where: {
+        videoID: params.vidKey
+    }}).then(function(video) {
+      if (video){
+        res.send(video);
+      }
+    }).catch(function(error) {
+              res.status(500).send({error: 'Could not load video'});
     });
 });
 
