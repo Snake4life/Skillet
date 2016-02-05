@@ -8,11 +8,13 @@ import Login from './components/Login';
 import Signup from './components/Signup';
 import Logout from './components/Logout';
 import Profile from './components/Profile';
+import Search from './components/Search';
 
 export default (
   <Route component={App}>
     <Route path='/' component={Home}/>
       <Route path='/user/:profile' component={Profile} />
+      <Route path='/search/:query' component={Search} />
       <Route path='/watch/:vKey' component={Watch} />
       <Route path='/upload' component={Upload} />
       <Route path='/login' component={Login} />

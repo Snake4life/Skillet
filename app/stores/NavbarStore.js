@@ -10,13 +10,11 @@ class NavbarStore {
     this.ajaxAnimationClass = '';
   }
 
-  onFindVideoSuccess(payload) {
-    var results = payload[0]
-    for (var i =0, len=results.length; i<len; i++) {
-      console.log(results[i].title);
-      console.log(results[i]);
-    }
-    payload.history.pushState(null, '/search/', {results});
+  onSearchSuccess(payload) {
+    console.log(payload.searchQuery);
+    var query = payload.searchQuery;
+    console.log(query);
+    payload.history.pushState(null, '/search/'+query);
   }
 
   onFindVideoFail(payload) {

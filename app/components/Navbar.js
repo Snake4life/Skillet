@@ -45,7 +45,7 @@ class Navbar extends React.Component {
     event.preventDefault();
 
     let searchQuery = this.state.searchQuery.trim();
-
+    console.log(searchQuery);
     if (searchQuery) {
       NavbarActions.findVideo({
         searchQuery: searchQuery,
