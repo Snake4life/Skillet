@@ -2158,6 +2158,7 @@ var VideoPreview = (function (_React$Component) {
       };
       var vKey = '/watch/' + this.props.vkey;
       var userLink = '/user/' + this.props.author;
+      var thumbImgLink = 'https://s3.amazonaws.com/testskillitthumb/' + vidID.vKey + '.png';
       return _react2.default.createElement(
         'li',
         { key: this.props.key, style: listyle },
@@ -2170,7 +2171,7 @@ var VideoPreview = (function (_React$Component) {
             _react2.default.createElement(
               'div',
               { 'class': 'thumbnail' },
-              _react2.default.createElement('img', { src: './img/videoplaceholder.png', alt: '' }),
+              _react2.default.createElement('img', { src: thumbImgLink, alt: '' }),
               _react2.default.createElement(
                 'div',
                 { 'class': 'caption' },
