@@ -16,7 +16,7 @@ class VideoPreview extends React.Component {
     }
     var vKey = '/watch/' + this.props.vkey;
     var userLink = '/user/' + this.props.author;
-    var thumbImgLink = 'https://s3.amazonaws.com/testskillitthumb/' + vidID.vKey + '.png';
+    var thumbImgLink = 'https://s3.amazonaws.com/testskillitthumb/' + this.props.vkey + '.png';
     return (
       <li key={this.props.key} style={listyle}>
       <Link to={vKey}>
